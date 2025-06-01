@@ -1,0 +1,59 @@
+import { slugField } from '@/fields/slug'
+import { populatePublishedAt } from '@/hooks/populatePublishedAt'
+import { revalidatePage } from '@/hooks/revalidatePage'
+import { revalidateDelete } from '@/hooks/revalidatePage'
+import { generatePreviewPath } from '@/utilities/generatePreviewPath'
+import { CollectionConfig } from 'payload'
+
+export const Pages: CollectionConfig<'pages'> = {
+  slug: 'pages',
+  access: {
+    read: () => true,
+  },
+  defaultPopulate: {
+    title: true,
+  },
+  admin: {
+    defaultColumns: ['title', 'slug', 'updatedAt'],
+    livePreview: {
+      url: ({ data, req }) => {
+        const path = generatePreviewPath({
+          slug: typeof data?.slug === 'string' ? data.slug : '',
+          collection: 'pages',
+          req,
+        })
+
+        return path
+      },
+    },
+    preview: (data, { req }) =>
+      generatePreviewPath({
+        slug: typeof data?.slug === 'string' ? data.slug : '',
+        collection: 'pages',
+        req,
+      }),
+    useAsTitle: 'title',
+  },
+
+  fields: [
+    {
+      name: 'title',
+      type: 'text',
+    },
+    ...slugField(),
+  ],
+  hooks: {
+    afterChange: [revalidatePage],
+    beforeChange: [populatePublishedAt],
+    afterDelete: [revalidateDelete],
+  },
+  versions: {
+    drafts: {
+      autosave: {
+        interval: 100, // We set this interval for optimal live preview
+      },
+      schedulePublish: true,
+    },
+    maxPerDoc: 50,
+  },
+}
