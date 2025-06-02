@@ -224,6 +224,7 @@ export interface Page {
  */
 export interface MediaBlock {
   media: number | Media;
+  backgroundColor?: ('lightGold' | 'charcoal') | null;
   richText?: {
     root: {
       type: string;
@@ -630,6 +631,7 @@ export interface PagesSelect<T extends boolean = true> {
  */
 export interface MediaBlockSelect<T extends boolean = true> {
   media?: T;
+  backgroundColor?: T;
   richText?: T;
   links?:
     | T

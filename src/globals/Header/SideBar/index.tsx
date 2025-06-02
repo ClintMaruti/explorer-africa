@@ -6,6 +6,7 @@ import { Header as HeaderType } from '@/payload-types'
 import { X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/utilities/ui'
+import { generateSlug } from '@/utilities/generateSlug'
 
 interface SidebarProps {
   data: HeaderType
@@ -16,7 +17,7 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ data, handleClose, isOpen }) => {
   const navGroups = data.navItems || []
   const pathname = usePathname()
-
+  // console.log('the data', data)
   const getItemUrl = (link: NonNullable<HeaderType['navItems']>[0]['link']) => {
     if (!link) return '#'
 
@@ -25,9 +26,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ data, handleClose, isOpen }) =
     }
 
     if (link.type === 'reference' && link.reference) {
-      const value =
-        typeof link.reference.value === 'object' ? link.reference.value.id : link.reference.value
-      return value === 1 ? '/' : `/${value}`
+      const slug =
+        typeof link.reference.value === 'object' ? link.reference.value.title : link.reference.value
+
+      const value = typeof slug === 'string' ? generateSlug(slug) : slug
+      return value === 'home' ? '/' : `/${value}`
     }
 
     return '#'

@@ -4,6 +4,10 @@ import {
   FixedToolbarFeature,
   HeadingFeature,
   InlineToolbarFeature,
+  ParagraphFeature,
+  UnorderedListFeature,
+  OrderedListFeature,
+  BlockquoteFeature,
 } from '@payloadcms/richtext-lexical'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import type { Block } from 'payload'
@@ -19,6 +23,13 @@ export const MediaBlock: Block = {
       required: true,
     },
     {
+      name: 'backgroundColor',
+      type: 'select',
+      options: ['lightGold', 'charcoal'],
+      defaultValue: 'charcoal',
+      required: false,
+    },
+    {
       name: 'richText',
       type: 'richText',
       editor: lexicalEditor({
@@ -29,6 +40,10 @@ export const MediaBlock: Block = {
             FixedToolbarFeature(),
             InlineToolbarFeature(),
             AlignFeature(),
+            ParagraphFeature(),
+            UnorderedListFeature(),
+            OrderedListFeature(),
+            BlockquoteFeature(),
           ]
         },
       }),

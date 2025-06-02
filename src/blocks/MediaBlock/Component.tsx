@@ -10,8 +10,9 @@ import type { DefaultNodeTypes } from '@payloadcms/richtext-lexical'
 import type { JSXConvertersFunction } from '@payloadcms/richtext-lexical/react'
 
 export const MediaBlock: React.FC<MediaBlockProps> = (props) => {
-  const { media, richText, links } = props
-
+  const { media, richText, links, backgroundColor = 'charcoal' } = props
+  const backgroundColorClass =
+    backgroundColor === 'charcoal' ? 'bg-charcoal/40' : 'bg-pale-mint-white/80'
   // Create custom converters for the content text
   const contentTextConverters: JSXConvertersFunction<DefaultNodeTypes> = useMemo(
     () =>
@@ -20,10 +21,10 @@ export const MediaBlock: React.FC<MediaBlockProps> = (props) => {
         heading: ({ node, nodesToJSX, parent, converters }) => {
           const tag = node.tag as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
           const classNames = {
-            h1: 'font-ogg text-gold text-4xl md:text-5xl lg:text-6xl mb-6 md:mb-8',
-            h2: 'font-poppins text-white text-3xl md:text-4xl lg:text-5xl mb-5 md:mb-6',
-            h3: 'font-poppins text-white text-2xl md:text-3xl lg:text-4xl mb-4 md:mb-5',
-            h4: 'font-poppins text-white text-xl md:text-2xl lg:text-3xl mb-4',
+            h1: `font-ogg ${backgroundColor === 'charcoal' ? 'text-gold' : 'text-gold-dark'} text-4xl md:text-5xl lg:text-6xl mb-6 md:mb-8`,
+            h2: `font-poppins ${backgroundColor === 'charcoal' ? 'text-white' : 'text-charcoal'} text-3xl md:text-4xl lg:text-5xl mb-5 md:mb-6`,
+            h3: `font-poppins ${backgroundColor === 'charcoal' ? 'text-white' : 'text-charcoal'} text-2xl md:text-3xl lg:text-4xl mb-4 md:mb-5`,
+            h4: `font-poppins ${backgroundColor === 'charcoal' ? 'text-white' : 'text-charcoal'} text-xl md:text-2xl lg:text-3xl mb-4`,
             h5: 'font-poppins text-white text-lg md:text-xl lg:text-2xl mb-3',
             h6: 'font-poppins text-white text-base md:text-lg lg:text-xl mb-3',
           }
@@ -36,7 +37,12 @@ export const MediaBlock: React.FC<MediaBlockProps> = (props) => {
           )
         },
         paragraph: ({ node, nodesToJSX, parent, converters }) => (
-          <p className="font-poppins text-white/90 text-base md:text-lg mb-4 md:mb-6">
+          <p
+            className={cn(
+              `font-poppins text-base md:text-lg mb-4 md:mb-6`,
+              backgroundColor === 'charcoal' ? 'text-white/90' : 'text-charcoal/90',
+            )}
+          >
             {nodesToJSX({ nodes: node.children, parent: node, converters })}
           </p>
         ),
@@ -65,7 +71,7 @@ export const MediaBlock: React.FC<MediaBlockProps> = (props) => {
         </motion.div>
       )}
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/40 z-[1]" />
+      <div className={`absolute inset-0 ${backgroundColorClass} z-[1]`} />
       {/* Content Overlay */}
       <motion.div
         initial={{ y: 20, opacity: 0 }}
