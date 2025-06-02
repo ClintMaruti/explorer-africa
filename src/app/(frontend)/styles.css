@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 
 @font-face {
   font-family: 'Ogg';
@@ -26,8 +26,10 @@
   --color-charcoal-darker: oklch(0.3527 0.007 264.5);
   --color-charcoal-lighter: oklch(0.5527 0.007 264.5);
   --color-charcoal-lightest: oklch(0.6527 0.007 264.5);
+  --color-pale-mint-white: oklch(0.9552 0.0152 90.24);
   --font-ogg: 'Ogg', sans-serif;
   --font-poppins: 'Poppins', sans-serif;
+  --font-playfair: 'Playfair Display', serif;
 }
 
 
@@ -38,6 +40,14 @@
   }
 
   h1 {
-    @apply text-6xl font-bold font-ogg text-gold;
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold font-ogg text-gold;
+  }
+
+  h4 {
+    @apply text-base md:text-lg lg:text-xl font-normal font-poppins text-white tracking-[0.2em] md:tracking-[0.3em] lg:tracking-[0.4em];
+  }
+
+  p {
+    @apply text-sm md:text-base lg:text-lg font-light font-poppins text-white block leading-5 md:leading-6 lg:leading-7;
   }
 }

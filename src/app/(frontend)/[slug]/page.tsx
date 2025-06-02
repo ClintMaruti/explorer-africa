@@ -5,7 +5,6 @@ import React, { cache } from 'react'
 import { draftMode } from 'next/headers'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
-import { RenderHero } from '@/heros/RenderHero'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -41,11 +40,9 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   return (
     <>
-      <PageClient />
       <PayloadRedirects disableNotFound url={url} />
-
       {draft && <LivePreviewListener />}
-      <RenderHero {...page.hero} />
+      <PageClient page={page} />
     </>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { Header as HeaderType } from '@/payload-types'
 import { X } from 'lucide-react'

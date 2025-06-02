@@ -8,14 +8,21 @@ import {
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import type { Block } from 'payload'
 
-export const MediaBlock: Block = {
-  slug: 'mediaBlock',
-  interfaceName: 'MediaBlock',
+export const ImageContentBlock: Block = {
+  slug: 'imageContentBlock',
+  interfaceName: 'ImageContentBlock',
   fields: [
     {
       name: 'media',
       type: 'upload',
       relationTo: 'media',
+      required: true,
+    },
+    {
+      name: 'imagePosition',
+      type: 'select',
+      options: ['left', 'right'],
+      defaultValue: 'left',
       required: true,
     },
     {

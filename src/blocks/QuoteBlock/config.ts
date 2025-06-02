@@ -1,22 +1,21 @@
-import { linkGroup } from '@/fields/linkGroup'
 import {
-  AlignFeature,
+  InlineToolbarFeature,
   FixedToolbarFeature,
   HeadingFeature,
-  InlineToolbarFeature,
+  lexicalEditor,
+  AlignFeature,
 } from '@payloadcms/richtext-lexical'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import type { Block } from 'payload'
+import { Block } from 'payload'
 
-export const MediaBlock: Block = {
-  slug: 'mediaBlock',
-  interfaceName: 'MediaBlock',
+export const QuoteBlock: Block = {
+  slug: 'quoteBlock',
+  interfaceName: 'QuoteBlock',
   fields: [
     {
       name: 'media',
       type: 'upload',
       relationTo: 'media',
-      required: true,
+      required: false,
     },
     {
       name: 'richText',
@@ -33,10 +32,5 @@ export const MediaBlock: Block = {
         },
       }),
     },
-    linkGroup({
-      overrides: {
-        maxRows: 2,
-      },
-    }),
   ],
 }

@@ -17,7 +17,7 @@ const VIDEO_STRIPS = 6
 
 export const VideoHero: React.FC<Page['hero']> = ({ type = 'videoHero', media, richText }) => {
   const videoRef = useRef<HTMLDivElement>(null)
-  console.log('richText', richText)
+  const scrollIndicatorRef = useRef<HTMLDivElement>(null)
   // Create custom converters for the hero section
   const heroTextConverters: JSXConvertersFunction<DefaultNodeTypes> = useMemo(
     () =>
@@ -87,6 +87,16 @@ export const VideoHero: React.FC<Page['hero']> = ({ type = 'videoHero', media, r
       ease: 'power2.inOut',
     })
 
+    // Animate scroll indicator
+    gsap.to(scrollIndicatorRef.current, {
+      y: 20,
+      opacity: 0.5,
+      duration: 1.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'power1.inOut',
+    })
+
     // Create the scroll-triggered scale animation
     gsap.to('.video-strip', {
       scale: 1.5,
@@ -96,6 +106,12 @@ export const VideoHero: React.FC<Page['hero']> = ({ type = 'videoHero', media, r
         start: 'top top',
         end: '+=3000px',
         scrub: true,
+        onEnter: () => {
+          gsap.to(scrollIndicatorRef.current, {
+            opacity: 0,
+            duration: 0.3,
+          })
+        },
       },
     })
 
@@ -138,6 +154,25 @@ export const VideoHero: React.FC<Page['hero']> = ({ type = 'videoHero', media, r
             {richText && (
               <RichText data={richText} enableGutter={false} converters={heroTextConverters} />
             )}
+          </div>
+          {/* Scroll indicator */}
+          <div
+            ref={scrollIndicatorRef}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 text-white flex flex-col items-center opacity-0"
+          >
+            <span className="font-poppins text-sm tracking-wider mb-2">Scroll Down</span>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 5v14M19 12l-7 7-7-7" />
+            </svg>
           </div>
         </section>
       </div>
