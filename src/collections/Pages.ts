@@ -1,4 +1,6 @@
+import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { slugField } from '@/fields/slug'
+import { hero } from '@/heros/config'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { revalidatePage } from '@/hooks/revalidatePage'
 import { revalidateDelete } from '@/hooks/revalidatePage'
@@ -39,6 +41,37 @@ export const Pages: CollectionConfig<'pages'> = {
     {
       name: 'title',
       type: 'text',
+      required: true,
+    },
+    {
+      type: 'tabs',
+      tabs: [
+        {
+          fields: [hero],
+          label: 'Hero',
+        },
+        {
+          fields: [
+            {
+              name: 'layout',
+              type: 'blocks',
+              blocks: [MediaBlock],
+              required: false,
+              admin: {
+                initCollapsed: true,
+              },
+            },
+          ],
+          label: 'Content',
+        },
+      ],
+    },
+    {
+      name: 'publishedAt',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+      },
     },
     ...slugField(),
   ],

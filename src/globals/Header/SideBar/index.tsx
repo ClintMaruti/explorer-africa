@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { Header as HeaderType } from '@/payload-types'
 import { X } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import { cn } from '@/utilities/ui'
 
 interface SidebarProps {
   data: HeaderType
@@ -13,17 +15,27 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ data, handleClose, isOpen }) => {
   const navGroups = data.navItems || []
+  const pathname = usePathname()
 
-  const getItemUrl = (link: NonNullable<NonNullable<HeaderType['navItems']>[0]['link']>) => {
+  const getItemUrl = (link: NonNullable<HeaderType['navItems']>[0]['link']) => {
+    if (!link) return '#'
+
     if (link.type === 'custom') {
       return link.url || '#'
     }
 
     if (link.type === 'reference' && link.reference) {
-      return `/${link.reference.value}`
+      const value =
+        typeof link.reference.value === 'object' ? link.reference.value.id : link.reference.value
+      return value === 1 ? '/' : `/${value}`
     }
 
     return '#'
+  }
+
+  const isActive = (link: NonNullable<HeaderType['navItems']>[0]['link']) => {
+    const url = getItemUrl(link)
+    return pathname === url
   }
 
   return (
@@ -55,12 +67,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ data, handleClose, isOpen }) =
             <ul className="space-y-6">
               {navGroups.map((group) => (
                 <li key={group.id} className="space-y-2">
-                  <Link
-                    href={getItemUrl(group.link)}
-                    className="flex items-center px-4 py-3 text-gray-700 rounded-md hover:bg-gray-100 hover:text-gray-900 transition-all duration-200"
-                  >
-                    {group.link.label}
-                  </Link>
+                  {group.link && (
+                    <Link
+                      href={getItemUrl(group.link)}
+                      className={cn(
+                        'flex items-center px-4 py-3 text-white transition-all duration-200',
+                        isActive(group.link)
+                          ? 'bg-gold text-gray-900'
+                          : 'hover:bg-gold hover:text-gray-900',
+                      )}
+                    >
+                      {group.link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
