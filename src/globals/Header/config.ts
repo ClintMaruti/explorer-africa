@@ -1,4 +1,6 @@
 import { GlobalConfig } from 'payload'
+import { revalidateHeader } from '@/hooks/revalidateHeader'
+import { link } from '@/fields/link'
 
 export const Header: GlobalConfig = {
   slug: 'header',
@@ -42,5 +44,24 @@ export const Header: GlobalConfig = {
       type: 'text',
       required: false,
     },
+    {
+      name: 'navItems',
+      type: 'array',
+      fields: [
+        link({
+          appearances: false,
+        }),
+      ],
+      maxRows: 20,
+      admin: {
+        initCollapsed: true,
+        components: {
+          RowLabel: '@/globals/Header/Nav/RowLabel',
+        },
+      },
+    },
   ],
+  hooks: {
+    afterChange: [revalidateHeader],
+  },
 }

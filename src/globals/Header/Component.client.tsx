@@ -2,6 +2,7 @@
 import { Header } from '@/payload-types'
 import Image from 'next/image'
 import { Mail, Menu } from 'lucide-react'
+import { Sidebar } from './SideBar'
 import { useState } from 'react'
 
 interface HeaderProps {
@@ -11,13 +12,14 @@ interface HeaderProps {
 export const HeaderClient: React.FC<HeaderProps> = ({ data }) => {
   const logoUrl = data.logo && typeof data.logo === 'object' ? data.logo.url : ''
   const logoAlt = data.logo && typeof data.logo === 'object' ? data.logo.alt : ''
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setOpen] = useState<boolean>(false)
+
   return (
     <header className="fixed top-0 left-0 p-6 w-full z-50 bg-black/50 backdrop-blur-sm text-gold">
       <div className="relative flex items-center sm:justify-between">
         <button
-          className=" cursor-pointer hover:bg-gold/10 rounded-full p-2"
-          onClick={() => setIsOpen(!isOpen)}
+          className="cursor-pointer hover:bg-gold/10 rounded-full p-2"
+          onClick={() => setOpen(!isOpen)}
         >
           <Menu />
         </button>
@@ -35,6 +37,7 @@ export const HeaderClient: React.FC<HeaderProps> = ({ data }) => {
           <span className="text-sm">{data.email}</span>
         </div>
       </div>
+      <Sidebar data={data} handleClose={setOpen} isOpen={isOpen} />
     </header>
   )
 }
