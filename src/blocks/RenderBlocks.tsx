@@ -8,6 +8,7 @@ import { ImageContentBlock } from '@/blocks/ImageContent/Component'
 import { ColumnsBlock } from '@/blocks/Columns/Component'
 import { MapBlock } from '@/blocks/Map/Component'
 import { GalleryBlock } from '@/blocks/Gallery/Component'
+import { ParallaxBlock } from '@/blocks/Parallax/Component'
 import { Footer } from './Footer/Component'
 
 const blockComponents = {
@@ -17,6 +18,7 @@ const blockComponents = {
   columnsBlock: ColumnsBlock,
   mapBlock: MapBlock,
   galleryBlock: GalleryBlock,
+  parallaxBlock: ParallaxBlock,
   footer: Footer,
 } as const
 

@@ -90,8 +90,7 @@ export const MapBlock: React.FC<MapBlockProps> = (props) => {
   return (
     <motion.div
       initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.1 }}
+      animate="visible"
       variants={containerVariants}
       className="w-full py-8 md:py-12 bg-pale-mint-white"
       id={anchorId || undefined}
@@ -100,8 +99,7 @@ export const MapBlock: React.FC<MapBlockProps> = (props) => {
         {title && (
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="font-ogg text-gold-dark text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8 text-center"
           >
@@ -111,8 +109,7 @@ export const MapBlock: React.FC<MapBlockProps> = (props) => {
 
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
           className={cn(
             'w-full overflow-hidden shadow-lg',
@@ -137,8 +134,7 @@ export const MapBlock: React.FC<MapBlockProps> = (props) => {
         {/* Map Info Footer */}
         <motion.div
           initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.5 }}
           className="mt-4 text-center"
         >
@@ -156,8 +152,7 @@ export const MapBlock: React.FC<MapBlockProps> = (props) => {
         {!address && !latitude && !longitude && !embedUrl && (
           <motion.div
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
             className="mt-4 text-center"
           >

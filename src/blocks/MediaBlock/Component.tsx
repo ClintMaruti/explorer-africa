@@ -65,8 +65,7 @@ export const MediaBlock: React.FC<MediaBlockProps> = (props) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, amount: 0.3 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
       className={'relative w-full overflow-hidden'}
     >
@@ -74,8 +73,7 @@ export const MediaBlock: React.FC<MediaBlockProps> = (props) => {
       {media && (
         <motion.div
           initial={{ scale: 1.1 }}
-          whileInView={{ scale: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
+          animate={{ scale: 1 }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
           className="absolute inset-0"
         >

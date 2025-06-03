@@ -118,8 +118,7 @@ export const GalleryBlock: React.FC<GalleryBlockProps> = (props) => {
     <>
       <motion.div
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        animate="visible"
         variants={containerVariants}
         className={cn('w-full py-16 md:py-20', backgroundColorClass)}
         id={anchorId || undefined}
@@ -129,9 +128,8 @@ export const GalleryBlock: React.FC<GalleryBlockProps> = (props) => {
           {(title || description) && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
               className="text-center mb-8 md:mb-12"
             >
               {title && (
@@ -211,9 +209,8 @@ export const GalleryBlock: React.FC<GalleryBlockProps> = (props) => {
                 {showCaptions && item.caption && (
                   <motion.div
                     initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
                     className="mt-3"
                   >
                     <p

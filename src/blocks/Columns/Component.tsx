@@ -138,8 +138,7 @@ export const ColumnsBlock: React.FC<ColumnsBlockProps> = (props) => {
   return (
     <motion.div
       initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.1 }}
+      animate="visible"
       variants={containerVariants}
       className={cn('w-full py-16 md:py-20 lg:py-24 relative overflow-hidden')}
       id={anchorId || undefined}

@@ -5,6 +5,7 @@ import { QuoteBlock } from '@/blocks/QuoteBlock/config'
 import { ColumnsBlock } from '@/blocks/Columns/config'
 import { MapBlock } from '@/blocks/Map/config'
 import { GalleryBlock } from '@/blocks/Gallery/config'
+import { ParallaxBlock } from '@/blocks/Parallax/config'
 import { slugField } from '@/fields/slug'
 import { hero } from '@/heros/config'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
@@ -68,6 +69,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 ColumnsBlock,
                 MapBlock,
                 GalleryBlock,
+                ParallaxBlock,
                 Footer,
               ],
               required: false,

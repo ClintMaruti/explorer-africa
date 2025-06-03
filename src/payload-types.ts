@@ -236,7 +236,9 @@ export interface Page {
         }[]
       | null;
   };
-  layout?: (MediaBlock | QuoteBlock | ImageContentBlock | ColumnsBlock | MapBlock | GalleryBlock | Footer)[] | null;
+  layout?:
+    | (MediaBlock | QuoteBlock | ImageContentBlock | ColumnsBlock | MapBlock | GalleryBlock | ParallaxBlock | Footer)[]
+    | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -505,6 +507,52 @@ export interface GalleryBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'galleryBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ParallaxBlock".
+ */
+export interface ParallaxBlock {
+  /**
+   * Optional ID for navigation links (e.g., "parallax-section")
+   */
+  anchorId?: string | null;
+  /**
+   * High resolution image for best parallax effect
+   */
+  backgroundImage: number | Media;
+  height?: ('small' | 'medium' | 'large' | 'xl') | null;
+  /**
+   * How fast the background moves relative to scroll
+   */
+  parallaxSpeed?: ('slow' | 'medium' | 'fast' | 'none') | null;
+  /**
+   * Dark overlay to improve text readability
+   */
+  overlay?: ('none' | 'light' | 'medium' | 'dark') | null;
+  /**
+   * Optional text content displayed over the parallax background
+   */
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  textAlignment?: ('left' | 'center' | 'right') | null;
+  textColor?: ('white' | 'black' | 'gold') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'parallaxBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -826,6 +874,7 @@ export interface PagesSelect<T extends boolean = true> {
         columnsBlock?: T | ColumnsBlockSelect<T>;
         mapBlock?: T | MapBlockSelect<T>;
         galleryBlock?: T | GalleryBlockSelect<T>;
+        parallaxBlock?: T | ParallaxBlockSelect<T>;
         footer?: T | FooterSelect<T>;
       };
   publishedAt?: T;
@@ -979,6 +1028,22 @@ export interface GalleryBlockSelect<T extends boolean = true> {
   enableLightbox?: T;
   showCaptions?: T;
   backgroundColor?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ParallaxBlock_select".
+ */
+export interface ParallaxBlockSelect<T extends boolean = true> {
+  anchorId?: T;
+  backgroundImage?: T;
+  height?: T;
+  parallaxSpeed?: T;
+  overlay?: T;
+  content?: T;
+  textAlignment?: T;
+  textColor?: T;
   id?: T;
   blockName?: T;
 }

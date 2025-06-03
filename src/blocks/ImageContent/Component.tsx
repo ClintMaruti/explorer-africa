@@ -9,11 +9,11 @@ import type { JSXConvertersFunction } from '@payloadcms/richtext-lexical/react'
 import Image from 'next/image'
 import { CMSLink } from '@/components/Link'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { motion } from 'framer-motion'
 import { useGSAP } from '@gsap/react'
 
-// Register ScrollTrigger plugin
-gsap.registerPlugin(ScrollTrigger)
+// Register plugins
+// gsap.registerPlugin(ScrollTrigger) - Removed to prevent conflicts
 
 export const ImageContentBlock: React.FC<ImageContentBlockProps> = (props) => {
   const {
@@ -87,167 +87,44 @@ export const ImageContentBlock: React.FC<ImageContentBlockProps> = (props) => {
 
   const backgroundColorClass = getBackgroundColorClass()
 
-  // Refs for animation
+  // Refs for hover animation only
   const containerRef = useRef<HTMLDivElement>(null)
-  const imageRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
   const imageWrapperRef = useRef<HTMLDivElement>(null)
   const contentWrapperRef = useRef<HTMLDivElement>(null)
-  const [isInitialized, setIsInitialized] = useState(false)
 
-  // GSAP animation setup
+  // Simple hover effects with GSAP (no ScrollTrigger)
   useGSAP(() => {
     if (!containerRef.current) return
 
-    // Set initial states only after component is mounted
-    setIsInitialized(true)
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 85%',
-        end: 'bottom 20%',
-        toggleActions: 'play none none reverse',
-      },
-    })
-
-    // Initial states - only apply after component is mounted
-    if (isInitialized) {
-      gsap.set([imageRef.current, contentRef.current], {
-        opacity: 1,
-        x: 0,
-      })
-    }
-
-    // Smoother, more subtle entrance animation
-    tl.fromTo(
-      [imageRef.current, contentRef.current],
-      {
-        opacity: 0,
-        x: (index) =>
-          index === 0
-            ? imagePosition === 'left'
-              ? '-50%'
-              : '50%'
-            : imagePosition === 'left'
-              ? '50%'
-              : '-50%',
-      },
-      {
-        opacity: 1,
-        x: 0,
-        duration: 1.2,
-        ease: 'power2.out',
-        stagger: 0.2,
-      },
-    )
-
-    // Mouse move handler for hover effects
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return
-
-      const rect = containerRef.current.getBoundingClientRect()
-      const x = (e.clientX - rect.left) / rect.width
-      const y = (e.clientY - rect.top) / rect.height
-
-      // Reduced parallax effect for image
-      if (imageWrapperRef.current) {
-        gsap.to(imageWrapperRef.current, {
-          rotateY: (x - 0.5) * 2,
-          rotateX: (y - 0.5) * -2,
-          scale: 1.02,
-          duration: 0.7,
-          ease: 'power1.out',
-        })
-      }
-
-      // Subtler content hover effect
-      if (contentWrapperRef.current) {
-        const intensity = 5
-        gsap.to(contentWrapperRef.current.querySelectorAll('p, h1, h2, h3, h4, h5, h6'), {
-          y: (y - 0.5) * intensity,
-          x: (x - 0.5) * intensity,
-          stagger: {
-            amount: 0.1,
-            from: 'start',
-          },
-          duration: 0.7,
-          ease: 'power1.out',
-        })
-      }
-
-      // Subtler background pattern movement
-      const bgPattern = contentRef.current?.querySelector('.absolute.inset-0 img')
-      if (bgPattern) {
-        gsap.to(bgPattern, {
-          scale: 1.05,
-          x: (x - 0.5) * 10,
-          y: (y - 0.5) * 10,
-          rotation: (x - 0.5) * 2,
-          duration: 1.2,
-          ease: 'power1.out',
-        })
-      }
-    }
-
-    // Mouse enter/leave handlers
     const handleMouseEnter = () => {
       if (imageWrapperRef.current) {
         gsap.to(imageWrapperRef.current, {
-          scale: 1.01,
-          duration: 0.4,
-          ease: 'power1.out',
+          scale: 1.05,
+          duration: 0.6,
+          ease: 'power2.out',
         })
       }
     }
 
     const handleMouseLeave = () => {
-      // Reset all animations with gentler transition
       if (imageWrapperRef.current) {
         gsap.to(imageWrapperRef.current, {
-          rotateY: 0,
-          rotateX: 0,
           scale: 1,
-          duration: 0.7,
-          ease: 'power1.inOut',
-        })
-      }
-
-      if (contentWrapperRef.current) {
-        gsap.to(contentWrapperRef.current.querySelectorAll('p, h1, h2, h3, h4, h5, h6'), {
-          y: 0,
-          x: 0,
-          duration: 0.7,
-          ease: 'power1.inOut',
-        })
-      }
-
-      const bgPattern = contentRef.current?.querySelector('.absolute.inset-0 img')
-      if (bgPattern) {
-        gsap.to(bgPattern, {
-          scale: 1,
-          x: 0,
-          y: 0,
-          rotation: 0,
-          duration: 1,
-          ease: 'power1.inOut',
+          duration: 0.6,
+          ease: 'power2.out',
         })
       }
     }
 
-    // Add event listeners
     const container = containerRef.current
-    container.addEventListener('mousemove', handleMouseMove)
     container.addEventListener('mouseenter', handleMouseEnter)
     container.addEventListener('mouseleave', handleMouseLeave)
 
-    // Cleanup
     return () => {
-      container.removeEventListener('mousemove', handleMouseMove)
       container.removeEventListener('mouseenter', handleMouseEnter)
       container.removeEventListener('mouseleave', handleMouseLeave)
     }
-  }, [imagePosition, isInitialized])
+  }, [])
 
   // Create custom converters for the content text
   const createContentTextConverters = (
@@ -328,22 +205,27 @@ export const ImageContentBlock: React.FC<ImageContentBlockProps> = (props) => {
     )
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
       ref={containerRef}
-      className={cn('relative w-full overflow-hidden opacity-100', backgroundColorClass)}
+      className={cn('relative w-full overflow-hidden', backgroundColorClass)}
       style={{ perspective: '1000px' }}
       id={anchorId || undefined}
     >
       <div className="grid md:grid-cols-2">
         {/* Image Section */}
-        <div
-          ref={imageRef}
+        <motion.div
+          initial={{ opacity: 0, x: imagePosition === 'left' ? -50 : 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           className={cn(
-            'relative aspect-[4/3] md:aspect-auto md:h-full opacity-100',
+            'relative aspect-[4/3] md:aspect-auto md:h-full',
             imagePosition === 'right' && 'md:order-last',
           )}
         >
-          <div ref={imageWrapperRef} className="w-full h-full transform-gpu">
+          <div ref={imageWrapperRef} className="w-full h-full transform-gpu overflow-hidden">
             {media && (
               <Media
                 imgClassName="w-full h-full object-cover transition-transform"
@@ -353,10 +235,15 @@ export const ImageContentBlock: React.FC<ImageContentBlockProps> = (props) => {
               />
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* Content Section */}
-        <div ref={contentRef} className="relative opacity-100">
+        <motion.div
+          initial={{ opacity: 0, x: imagePosition === 'left' ? 50 : -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="relative"
+        >
           {/* Background Pattern */}
           <div className={cn('absolute inset-0 overflow-hidden')}>
             <Image
@@ -431,8 +318,8 @@ export const ImageContentBlock: React.FC<ImageContentBlockProps> = (props) => {
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   )
 }
