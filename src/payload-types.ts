@@ -210,7 +210,7 @@ export interface Page {
         }[]
       | null;
   };
-  layout?: (MediaBlock | QuoteBlock | ImageContentBlock | ColumnsBlock | Footer)[] | null;
+  layout?: (MediaBlock | QuoteBlock | ImageContentBlock | ColumnsBlock | MapBlock | Footer)[] | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -363,6 +363,36 @@ export interface ColumnsBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'columnsBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MapBlock".
+ */
+export interface MapBlock {
+  title?: string | null;
+  mapType: 'google' | 'embed';
+  latitude?: number | null;
+  longitude?: number | null;
+  /**
+   * Used for Google Maps search if coordinates are not provided
+   */
+  address?: string | null;
+  /**
+   * Full embed URL for custom maps (Google Maps, OpenStreetMap, etc.)
+   */
+  embedUrl?: string | null;
+  /**
+   * Zoom level (1-20, higher = more zoomed in)
+   */
+  zoomLevel?: number | null;
+  mapMode?: ('roadmap' | 'satellite' | 'hybrid' | 'terrain') | null;
+  height?: ('small' | 'medium' | 'large' | 'xl') | null;
+  showControls?: boolean | null;
+  allowFullscreen?: boolean | null;
+  borderRadius?: ('none' | 'small' | 'medium' | 'large') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mapBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -648,6 +678,7 @@ export interface PagesSelect<T extends boolean = true> {
         quoteBlock?: T | QuoteBlockSelect<T>;
         imageContentBlock?: T | ImageContentBlockSelect<T>;
         columnsBlock?: T | ColumnsBlockSelect<T>;
+        mapBlock?: T | MapBlockSelect<T>;
         footer?: T | FooterSelect<T>;
       };
   publishedAt?: T;
@@ -734,6 +765,26 @@ export interface ColumnsBlockSelect<T extends boolean = true> {
         id?: T;
       };
   spacing?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MapBlock_select".
+ */
+export interface MapBlockSelect<T extends boolean = true> {
+  title?: T;
+  mapType?: T;
+  latitude?: T;
+  longitude?: T;
+  address?: T;
+  embedUrl?: T;
+  zoomLevel?: T;
+  mapMode?: T;
+  height?: T;
+  showControls?: T;
+  allowFullscreen?: T;
+  borderRadius?: T;
   id?: T;
   blockName?: T;
 }

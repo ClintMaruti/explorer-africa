@@ -6,6 +6,7 @@ import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { QuoteBlock } from '@/blocks/QuoteBlock/Component'
 import { ImageContentBlock } from '@/blocks/ImageContent/Component'
 import { ColumnsBlock } from '@/blocks/Columns/Component'
+import { MapBlock } from '@/blocks/Map/Component'
 import { Footer } from './Footer/Component'
 
 const blockComponents = {
@@ -13,6 +14,7 @@ const blockComponents = {
   quoteBlock: QuoteBlock,
   imageContentBlock: ImageContentBlock,
   columnsBlock: ColumnsBlock,
+  mapBlock: MapBlock,
   footer: Footer,
 } as const
 
