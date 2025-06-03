@@ -9,6 +9,7 @@ import { Media } from '@/components/Media'
 
 export const ColumnsBlock: React.FC<ColumnsBlockProps> = (props) => {
   const {
+    anchorId,
     columns,
     columnCount = '2',
     backgroundColor = 'white',
@@ -141,6 +142,7 @@ export const ColumnsBlock: React.FC<ColumnsBlockProps> = (props) => {
       viewport={{ once: true, amount: 0.1 }}
       variants={containerVariants}
       className={cn('w-full py-16 md:py-20 lg:py-24 relative overflow-hidden')}
+      id={anchorId || undefined}
     >
       {/* Background Image */}
       {backgroundImage && (

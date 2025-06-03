@@ -7,6 +7,7 @@ import { QuoteBlock } from '@/blocks/QuoteBlock/Component'
 import { ImageContentBlock } from '@/blocks/ImageContent/Component'
 import { ColumnsBlock } from '@/blocks/Columns/Component'
 import { MapBlock } from '@/blocks/Map/Component'
+import { GalleryBlock } from '@/blocks/Gallery/Component'
 import { Footer } from './Footer/Component'
 
 const blockComponents = {
@@ -15,6 +16,7 @@ const blockComponents = {
   imageContentBlock: ImageContentBlock,
   columnsBlock: ColumnsBlock,
   mapBlock: MapBlock,
+  galleryBlock: GalleryBlock,
   footer: Footer,
 } as const
 

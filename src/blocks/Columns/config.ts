@@ -16,6 +16,15 @@ export const ColumnsBlock: Block = {
   interfaceName: 'ColumnsBlock',
   fields: [
     {
+      name: 'anchorId',
+      type: 'text',
+      label: 'Anchor ID',
+      required: false,
+      admin: {
+        description: 'Optional ID for navigation links (e.g., "location-section")',
+      },
+    },
+    {
       name: 'columnCount',
       type: 'select',
       options: [

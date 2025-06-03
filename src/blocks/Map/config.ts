@@ -5,6 +5,15 @@ export const MapBlock: Block = {
   interfaceName: 'MapBlock',
   fields: [
     {
+      name: 'anchorId',
+      type: 'text',
+      label: 'Anchor ID',
+      required: false,
+      admin: {
+        description: 'Optional ID for navigation links (e.g., "location-section")',
+      },
+    },
+    {
       name: 'title',
       type: 'text',
       label: 'Map Title',

@@ -4,6 +4,7 @@ import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { QuoteBlock } from '@/blocks/QuoteBlock/config'
 import { ColumnsBlock } from '@/blocks/Columns/config'
 import { MapBlock } from '@/blocks/Map/config'
+import { GalleryBlock } from '@/blocks/Gallery/config'
 import { slugField } from '@/fields/slug'
 import { hero } from '@/heros/config'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
@@ -60,7 +61,15 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [MediaBlock, QuoteBlock, ImageContentBlock, ColumnsBlock, MapBlock, Footer],
+              blocks: [
+                MediaBlock,
+                QuoteBlock,
+                ImageContentBlock,
+                ColumnsBlock,
+                MapBlock,
+                GalleryBlock,
+                Footer,
+              ],
               required: false,
               admin: {
                 initCollapsed: true,

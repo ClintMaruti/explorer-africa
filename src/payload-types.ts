@@ -164,6 +164,32 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    tablet?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -210,7 +236,7 @@ export interface Page {
         }[]
       | null;
   };
-  layout?: (MediaBlock | QuoteBlock | ImageContentBlock | ColumnsBlock | MapBlock | Footer)[] | null;
+  layout?: (MediaBlock | QuoteBlock | ImageContentBlock | ColumnsBlock | MapBlock | GalleryBlock | Footer)[] | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -240,6 +266,26 @@ export interface MediaBlock {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Add menu icons that link to sections on the page
+   */
+  menuItems?:
+    | {
+        /**
+         * Upload an icon (SVG, PNG, or JPEG recommended)
+         */
+        icon: number | Media;
+        /**
+         * Display name for the menu item
+         */
+        name: string;
+        /**
+         * ID of the section to scroll to (e.g., "restaurant-section")
+         */
+        anchorId: string;
+        id?: string | null;
+      }[]
+    | null;
   links?:
     | {
         link: {
@@ -293,23 +339,45 @@ export interface QuoteBlock {
  * via the `definition` "ImageContentBlock".
  */
 export interface ImageContentBlock {
+  /**
+   * Optional ID for navigation links (e.g., "accommodation-section")
+   */
+  anchorId?: string | null;
   media: number | Media;
   imagePosition: 'left' | 'right';
-  richText?: {
-    root: {
-      type: string;
-      children: {
+  backgroundColor?: ('lightGold' | 'charcoal' | 'white' | 'auto') | null;
+  /**
+   * Add multiple content sections with individual styling
+   */
+  contentSections: {
+    sectionType: 'richText' | 'horizontalLine';
+    richText?: {
+      root: {
         type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
         version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Color for this text section
+     */
+    textColor?: ('dark' | 'light' | 'gold' | 'auto') | null;
+    lineColor?: ('gold' | 'charcoal' | 'white' | 'lightGold') | null;
+    lineWidth?: ('short' | 'medium' | 'long' | 'full') | null;
+    /**
+     * Vertical spacing around this section
+     */
+    spacing?: ('small' | 'medium' | 'large') | null;
+    id?: string | null;
+  }[];
   links?:
     | {
         link: {
@@ -338,6 +406,10 @@ export interface ImageContentBlock {
  * via the `definition` "ColumnsBlock".
  */
 export interface ColumnsBlock {
+  /**
+   * Optional ID for navigation links (e.g., "location-section")
+   */
+  anchorId?: string | null;
   columnCount: '2' | '3' | '4';
   backgroundColor?: ('lightGold' | 'charcoal' | 'white') | null;
   backgroundImage?: (number | null) | Media;
@@ -369,6 +441,10 @@ export interface ColumnsBlock {
  * via the `definition` "MapBlock".
  */
 export interface MapBlock {
+  /**
+   * Optional ID for navigation links (e.g., "location-section")
+   */
+  anchorId?: string | null;
   title?: string | null;
   mapType: 'google' | 'embed';
   latitude?: number | null;
@@ -393,6 +469,42 @@ export interface MapBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'mapBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock".
+ */
+export interface GalleryBlock {
+  /**
+   * Optional ID for navigation links (e.g., "gallery-section")
+   */
+  anchorId?: string | null;
+  title?: string | null;
+  description?: string | null;
+  images: {
+    image: number | Media;
+    caption?: string | null;
+    /**
+     * Alternative text for accessibility
+     */
+    alt?: string | null;
+    id?: string | null;
+  }[];
+  layout?: ('2' | '3' | '4' | '5') | null;
+  aspectRatio?: ('square' | 'landscape' | 'portrait' | 'wide' | 'auto') | null;
+  spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+  /**
+   * Allow images to open in full-screen lightbox on click
+   */
+  enableLightbox?: boolean | null;
+  /**
+   * Display image captions below each image
+   */
+  showCaptions?: boolean | null;
+  backgroundColor?: ('white' | 'lightGold' | 'charcoal') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'galleryBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -642,6 +754,40 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        tablet?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -679,6 +825,7 @@ export interface PagesSelect<T extends boolean = true> {
         imageContentBlock?: T | ImageContentBlockSelect<T>;
         columnsBlock?: T | ColumnsBlockSelect<T>;
         mapBlock?: T | MapBlockSelect<T>;
+        galleryBlock?: T | GalleryBlockSelect<T>;
         footer?: T | FooterSelect<T>;
       };
   publishedAt?: T;
@@ -696,6 +843,14 @@ export interface MediaBlockSelect<T extends boolean = true> {
   media?: T;
   backgroundColor?: T;
   richText?: T;
+  menuItems?:
+    | T
+    | {
+        icon?: T;
+        name?: T;
+        anchorId?: T;
+        id?: T;
+      };
   links?:
     | T
     | {
@@ -729,9 +884,21 @@ export interface QuoteBlockSelect<T extends boolean = true> {
  * via the `definition` "ImageContentBlock_select".
  */
 export interface ImageContentBlockSelect<T extends boolean = true> {
+  anchorId?: T;
   media?: T;
   imagePosition?: T;
-  richText?: T;
+  backgroundColor?: T;
+  contentSections?:
+    | T
+    | {
+        sectionType?: T;
+        richText?: T;
+        textColor?: T;
+        lineColor?: T;
+        lineWidth?: T;
+        spacing?: T;
+        id?: T;
+      };
   links?:
     | T
     | {
@@ -755,6 +922,7 @@ export interface ImageContentBlockSelect<T extends boolean = true> {
  * via the `definition` "ColumnsBlock_select".
  */
 export interface ColumnsBlockSelect<T extends boolean = true> {
+  anchorId?: T;
   columnCount?: T;
   backgroundColor?: T;
   backgroundImage?: T;
@@ -773,6 +941,7 @@ export interface ColumnsBlockSelect<T extends boolean = true> {
  * via the `definition` "MapBlock_select".
  */
 export interface MapBlockSelect<T extends boolean = true> {
+  anchorId?: T;
   title?: T;
   mapType?: T;
   latitude?: T;
@@ -785,6 +954,31 @@ export interface MapBlockSelect<T extends boolean = true> {
   showControls?: T;
   allowFullscreen?: T;
   borderRadius?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock_select".
+ */
+export interface GalleryBlockSelect<T extends boolean = true> {
+  anchorId?: T;
+  title?: T;
+  description?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        alt?: T;
+        id?: T;
+      };
+  layout?: T;
+  aspectRatio?: T;
+  spacing?: T;
+  enableLightbox?: T;
+  showCaptions?: T;
+  backgroundColor?: T;
   id?: T;
   blockName?: T;
 }

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 
 export const MapBlock: React.FC<MapBlockProps> = (props) => {
   const {
+    anchorId,
     title,
     mapType = 'google',
     latitude,
@@ -51,8 +52,8 @@ export const MapBlock: React.FC<MapBlockProps> = (props) => {
     const params = new URLSearchParams({
       key: apiKey,
       q: query,
-      zoom: zoomLevel.toString(),
-      maptype: mapMode,
+      zoom: (zoomLevel || 15).toString(),
+      maptype: mapMode || 'roadmap',
     })
 
     return `${baseUrl}?${params.toString()}`
@@ -93,6 +94,7 @@ export const MapBlock: React.FC<MapBlockProps> = (props) => {
       viewport={{ once: true, amount: 0.1 }}
       variants={containerVariants}
       className="w-full py-8 md:py-12 bg-pale-mint-white"
+      id={anchorId || undefined}
     >
       <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-6xl">
         {title && (
@@ -124,7 +126,7 @@ export const MapBlock: React.FC<MapBlockProps> = (props) => {
             width="100%"
             height="100%"
             style={{ border: 0 }}
-            allowFullScreen={allowFullscreen}
+            allowFullScreen={allowFullscreen ?? true}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             title={getMapTitle()}

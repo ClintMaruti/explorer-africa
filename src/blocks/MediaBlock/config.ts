@@ -48,6 +48,46 @@ export const MediaBlock: Block = {
         },
       }),
     },
+    {
+      name: 'menuItems',
+      type: 'array',
+      label: 'Menu Icons',
+      maxRows: 8,
+      required: false,
+      admin: {
+        description: 'Add menu icons that link to sections on the page',
+      },
+      fields: [
+        {
+          name: 'icon',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+          label: 'Menu Icon',
+          admin: {
+            description: 'Upload an icon (SVG, PNG, or JPEG recommended)',
+          },
+        },
+        {
+          name: 'name',
+          type: 'text',
+          required: true,
+          label: 'Menu Name',
+          admin: {
+            description: 'Display name for the menu item',
+          },
+        },
+        {
+          name: 'anchorId',
+          type: 'text',
+          required: true,
+          label: 'Anchor ID',
+          admin: {
+            description: 'ID of the section to scroll to (e.g., "restaurant-section")',
+          },
+        },
+      ],
+    },
     linkGroup({
       overrides: {
         maxRows: 2,
