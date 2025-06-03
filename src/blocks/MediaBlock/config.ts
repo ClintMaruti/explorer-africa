@@ -1,4 +1,4 @@
-import { linkGroup } from '@/fields/linkGroup'
+import { linkGroup } from '../../fields/linkGroup'
 import {
   AlignFeature,
   FixedToolbarFeature,

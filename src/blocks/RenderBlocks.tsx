@@ -5,12 +5,14 @@ import type { Page } from '@/payload-types'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { QuoteBlock } from '@/blocks/QuoteBlock/Component'
 import { ImageContentBlock } from '@/blocks/ImageContent/Component'
+import { ColumnsBlock } from '@/blocks/Columns/Component'
 import { Footer } from './Footer/Component'
 
 const blockComponents = {
   mediaBlock: MediaBlock,
   quoteBlock: QuoteBlock,
   imageContentBlock: ImageContentBlock,
+  columnsBlock: ColumnsBlock,
   footer: Footer,
 } as const
 

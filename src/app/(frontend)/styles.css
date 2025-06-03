@@ -32,9 +32,7 @@
   --font-playfair: 'Playfair Display', serif;
 }
 
-
 @layer base {
-
   body {
     @apply font-poppins;
   }
@@ -50,4 +48,52 @@
   p {
     @apply text-sm md:text-base lg:text-lg font-light font-poppins text-white block leading-5 md:leading-6 lg:leading-7;
   }
+}
+
+/* Rich Text Editor Columns */
+.columns-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.column {
+  padding: 1rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-height: 100px;
+}
+
+.column:empty::before {
+  content: 'Add content here...';
+  color: #999;
+  font-style: italic;
+}
+
+.toolbar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  background-color: white;
+  color: #4a5568;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toolbar-button:hover {
+  background-color: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.toolbar-button:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px #3b82f6;
 }

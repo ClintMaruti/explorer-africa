@@ -210,7 +210,7 @@ export interface Page {
         }[]
       | null;
   };
-  layout?: (MediaBlock | QuoteBlock | ImageContentBlock | Footer)[] | null;
+  layout?: (MediaBlock | QuoteBlock | ImageContentBlock | ColumnsBlock | Footer)[] | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -332,6 +332,37 @@ export interface ImageContentBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'imageContentBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ColumnsBlock".
+ */
+export interface ColumnsBlock {
+  columnCount: '2' | '3' | '4';
+  backgroundColor?: ('lightGold' | 'charcoal' | 'white') | null;
+  backgroundImage?: (number | null) | Media;
+  columns: {
+    content?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    id?: string | null;
+  }[];
+  spacing?: ('small' | 'medium' | 'large') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'columnsBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -616,6 +647,7 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         quoteBlock?: T | QuoteBlockSelect<T>;
         imageContentBlock?: T | ImageContentBlockSelect<T>;
+        columnsBlock?: T | ColumnsBlockSelect<T>;
         footer?: T | FooterSelect<T>;
       };
   publishedAt?: T;
@@ -684,6 +716,24 @@ export interface ImageContentBlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ColumnsBlock_select".
+ */
+export interface ColumnsBlockSelect<T extends boolean = true> {
+  columnCount?: T;
+  backgroundColor?: T;
+  backgroundImage?: T;
+  columns?:
+    | T
+    | {
+        content?: T;
+        id?: T;
+      };
+  spacing?: T;
   id?: T;
   blockName?: T;
 }

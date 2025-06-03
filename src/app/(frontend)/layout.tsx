@@ -11,8 +11,8 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning={true}>
+      <body suppressHydrationWarning={true}>
         <Header />
         <main>{children}</main>
       </body>

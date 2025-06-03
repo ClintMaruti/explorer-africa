@@ -2,6 +2,7 @@ import { Footer } from '@/blocks/Footer/config'
 import { ImageContentBlock } from '@/blocks/ImageContent/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { QuoteBlock } from '@/blocks/QuoteBlock/config'
+import { ColumnsBlock } from '@/blocks/Columns/config'
 import { slugField } from '@/fields/slug'
 import { hero } from '@/heros/config'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
@@ -58,7 +59,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [MediaBlock, QuoteBlock, ImageContentBlock, Footer],
+              blocks: [MediaBlock, QuoteBlock, ImageContentBlock, ColumnsBlock, Footer],
               required: false,
               admin: {
                 initCollapsed: true,

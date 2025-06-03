@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
+    "@lexical/react": "^0.28.0",
+    "@lexical/rich-text": "^0.28.0",
     "@payloadcms/db-postgres": "3.40.0",
     "@payloadcms/live-preview-react": "^3.40.0",
     "@payloadcms/next": "3.40.0",
@@ -31,7 +33,7 @@
     "framer-motion": "^12.15.0",
     "graphql": "^16.8.1",
     "gsap": "^3.13.0",
-    "lexical": "^0.31.2",
+    "lexical": "^0.28.0",
     "lucide-react": "^0.511.0",
     "next": "15.3.0",
     "payload": "3.40.0",
