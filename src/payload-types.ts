@@ -70,6 +70,8 @@ export interface Config {
     users: User;
     media: Media;
     pages: Page;
+    'room-rates': RoomRate;
+    documents: Document;
     redirects: Redirect;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -81,6 +83,8 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
+    'room-rates': RoomRatesSelect<false> | RoomRatesSelect<true>;
+    documents: DocumentsSelect<false> | DocumentsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -237,7 +241,18 @@ export interface Page {
       | null;
   };
   layout?:
-    | (MediaBlock | QuoteBlock | ImageContentBlock | ColumnsBlock | MapBlock | GalleryBlock | ParallaxBlock | Footer)[]
+    | (
+        | MediaBlock
+        | QuoteBlock
+        | ImageContentBlock
+        | ColumnsBlock
+        | MapBlock
+        | GalleryBlock
+        | ParallaxBlock
+        | RoomRatesBlock
+        | Footer
+        | CollapsibleBlock
+      )[]
     | null;
   publishedAt?: string | null;
   slug?: string | null;
@@ -347,7 +362,7 @@ export interface ImageContentBlock {
   anchorId?: string | null;
   media: number | Media;
   imagePosition: 'left' | 'right';
-  backgroundColor?: ('lightGold' | 'charcoal' | 'white' | 'auto') | null;
+  backgroundColor?: ('lightGold' | 'charcoal' | 'white' | 'gold-dark' | 'gold-darker' | 'gold-darkest' | 'auto') | null;
   /**
    * Add multiple content sections with individual styling
    */
@@ -371,8 +386,8 @@ export interface ImageContentBlock {
     /**
      * Color for this text section
      */
-    textColor?: ('dark' | 'light' | 'gold' | 'auto') | null;
-    lineColor?: ('gold' | 'charcoal' | 'white' | 'lightGold') | null;
+    textColor?: ('dark' | 'light' | 'gold' | 'gold-dark' | 'gold-darker' | 'gold-darkest' | 'auto') | null;
+    lineColor?: ('gold' | 'gold-dark' | 'gold-darker' | 'gold-darkest' | 'charcoal' | 'white' | 'lightGold') | null;
     lineWidth?: ('short' | 'medium' | 'long' | 'full') | null;
     /**
      * Vertical spacing around this section
@@ -380,6 +395,24 @@ export interface ImageContentBlock {
     spacing?: ('small' | 'medium' | 'large') | null;
     id?: string | null;
   }[];
+  /**
+   * Automatically add horizontal lines between content sections
+   */
+  showSeparatorLines?: boolean | null;
+  /**
+   * Style of the separator lines between sections
+   */
+  separatorStyle?: ('solid' | 'dashed' | 'dotted') | null;
+  /**
+   * Color of the separator lines between sections
+   */
+  separatorColor?:
+    | ('gold' | 'gold-dark' | 'gold-darker' | 'gold-darkest' | 'lightGray' | 'darkGray' | 'charcoal' | 'white' | 'auto')
+    | null;
+  /**
+   * Width of the separator lines between sections
+   */
+  separatorWidth?: ('short' | 'medium' | 'long' | 'full') | null;
   links?:
     | {
         link: {
@@ -412,7 +445,25 @@ export interface ColumnsBlock {
    * Optional ID for navigation links (e.g., "location-section")
    */
   anchorId?: string | null;
-  columnCount: '2' | '3' | '4';
+  columnCount: '1' | '2' | '3' | '4';
+  /**
+   * Optional title or introductory text displayed above the columns
+   */
+  headerContent?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   backgroundColor?: ('lightGold' | 'charcoal' | 'white') | null;
   backgroundImage?: (number | null) | Media;
   columns: {
@@ -434,6 +485,34 @@ export interface ColumnsBlock {
     id?: string | null;
   }[];
   spacing?: ('small' | 'medium' | 'large') | null;
+  /**
+   * How columns should be ordered when stacked vertically on mobile devices
+   */
+  stackOrder?: ('normal' | 'reverse' | 'alternate') | null;
+  /**
+   * How columns should be aligned vertically on desktop
+   */
+  verticalAlignment?: ('top' | 'center' | 'bottom' | 'stretch') | null;
+  /**
+   * Screen size below which columns will stack vertically
+   */
+  stackBreakpoint?: ('sm' | 'md' | 'lg') | null;
+  /**
+   * Display separator lines between columns
+   */
+  showBorders?: boolean | null;
+  /**
+   * Style of the border lines between columns
+   */
+  borderStyle?: ('solid' | 'dashed' | 'dotted') | null;
+  /**
+   * Color of the border lines between columns
+   */
+  borderColor?: ('gold' | 'lightGray' | 'darkGray' | 'charcoal' | 'white') | null;
+  /**
+   * Where to display the border lines
+   */
+  borderPosition?: ('vertical' | 'horizontal' | 'both') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'columnsBlock';
@@ -556,6 +635,135 @@ export interface ParallaxBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RoomRatesBlock".
+ */
+export interface RoomRatesBlock {
+  /**
+   * Optional ID for navigation links (e.g., "rates-section")
+   */
+  anchorId?: string | null;
+  /**
+   * Select the room rates data to display
+   */
+  roomRates: number | RoomRate;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'room-rates-block';
+}
+/**
+ * Manage room rates and seasonal information. You can either fill the form manually or upload a JSON file.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "room-rates".
+ */
+export interface RoomRate {
+  id: number;
+  /**
+   * Year for these rates (e.g., 2025)
+   */
+  year: number;
+  /**
+   * Optional: Upload your rates data as a JSON object. This will override any manually entered data.
+   */
+  jsonUpload?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Define the date ranges for each season
+   */
+  seasons: {
+    /**
+     * Peak season date range
+     */
+    peak: string;
+    /**
+     * High season date range
+     */
+    high: string;
+    /**
+     * Mid season date range
+     */
+    mid: string;
+    /**
+     * Low season date range
+     */
+    low: string;
+  };
+  /**
+   * Configure different room types and their rates
+   */
+  rates: {
+    /**
+     * Name of the room type (e.g., Savannah Room)
+     */
+    room_type: string;
+    /**
+     * Total number of rooms of this type
+     */
+    total: number;
+    /**
+     * Size of the room (e.g., 46 sq/m)
+     */
+    size: string;
+    /**
+     * Available bed configurations
+     */
+    bed_options: string;
+    /**
+     * Key features and amenities of the room
+     */
+    features: string;
+    /**
+     * Additional information about the room (e.g., interconnecting rooms, ADA accessibility)
+     */
+    additional?: string | null;
+    /**
+     * Maximum room occupancy details
+     */
+    occupancy: string;
+    /**
+     * Different rate packages available for this room type
+     */
+    rate_types: {
+      rate_type: 'Full Board' | 'Game Package';
+      /**
+       * Rates for different room configurations
+       */
+      rooms: {
+        room: 'Single' | 'Double' | 'Triple' | 'Per Room';
+        /**
+         * Low season rate
+         */
+        low: number;
+        /**
+         * Mid season rate
+         */
+        mid: number;
+        /**
+         * High season rate
+         */
+        high: number;
+        /**
+         * Peak season rate
+         */
+        peak: number;
+        id?: string | null;
+      }[];
+      id?: string | null;
+    }[];
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "Footer".
  */
 export interface Footer {
@@ -590,6 +798,69 @@ export interface Footer {
   id?: string | null;
   blockName?: string | null;
   blockType: 'footer';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CollapsibleBlock".
+ */
+export interface CollapsibleBlock {
+  /**
+   * Optional ID for navigation links (e.g., "rates-section")
+   */
+  anchorId?: string | null;
+  /**
+   * Heading of the collapsible block
+   */
+  heading: string;
+  items?:
+    | {
+        /**
+         * Title of the collapsible block
+         */
+        title: string;
+        /**
+         * Content of the collapsible block
+         */
+        content: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'collapsibleBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documents".
+ */
+export interface Document {
+  id: number;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -719,6 +990,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pages';
         value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'room-rates';
+        value: number | RoomRate;
+      } | null)
+    | ({
+        relationTo: 'documents';
+        value: number | Document;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -875,7 +1154,9 @@ export interface PagesSelect<T extends boolean = true> {
         mapBlock?: T | MapBlockSelect<T>;
         galleryBlock?: T | GalleryBlockSelect<T>;
         parallaxBlock?: T | ParallaxBlockSelect<T>;
+        'room-rates-block'?: T | RoomRatesBlockSelect<T>;
         footer?: T | FooterSelect<T>;
+        collapsibleBlock?: T | CollapsibleBlockSelect<T>;
       };
   publishedAt?: T;
   slug?: T;
@@ -948,6 +1229,10 @@ export interface ImageContentBlockSelect<T extends boolean = true> {
         spacing?: T;
         id?: T;
       };
+  showSeparatorLines?: T;
+  separatorStyle?: T;
+  separatorColor?: T;
+  separatorWidth?: T;
   links?:
     | T
     | {
@@ -973,6 +1258,7 @@ export interface ImageContentBlockSelect<T extends boolean = true> {
 export interface ColumnsBlockSelect<T extends boolean = true> {
   anchorId?: T;
   columnCount?: T;
+  headerContent?: T;
   backgroundColor?: T;
   backgroundImage?: T;
   columns?:
@@ -982,6 +1268,13 @@ export interface ColumnsBlockSelect<T extends boolean = true> {
         id?: T;
       };
   spacing?: T;
+  stackOrder?: T;
+  verticalAlignment?: T;
+  stackBreakpoint?: T;
+  showBorders?: T;
+  borderStyle?: T;
+  borderColor?: T;
+  borderPosition?: T;
   id?: T;
   blockName?: T;
 }
@@ -1049,6 +1342,16 @@ export interface ParallaxBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RoomRatesBlock_select".
+ */
+export interface RoomRatesBlockSelect<T extends boolean = true> {
+  anchorId?: T;
+  roomRates?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "Footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
@@ -1070,6 +1373,87 @@ export interface FooterSelect<T extends boolean = true> {
   content?: T;
   id?: T;
   blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CollapsibleBlock_select".
+ */
+export interface CollapsibleBlockSelect<T extends boolean = true> {
+  anchorId?: T;
+  heading?: T;
+  items?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "room-rates_select".
+ */
+export interface RoomRatesSelect<T extends boolean = true> {
+  year?: T;
+  jsonUpload?: T;
+  seasons?:
+    | T
+    | {
+        peak?: T;
+        high?: T;
+        mid?: T;
+        low?: T;
+      };
+  rates?:
+    | T
+    | {
+        room_type?: T;
+        total?: T;
+        size?: T;
+        bed_options?: T;
+        features?: T;
+        additional?: T;
+        occupancy?: T;
+        rate_types?:
+          | T
+          | {
+              rate_type?: T;
+              rooms?:
+                | T
+                | {
+                    room?: T;
+                    low?: T;
+                    mid?: T;
+                    high?: T;
+                    peak?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documents_select".
+ */
+export interface DocumentsSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

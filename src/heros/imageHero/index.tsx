@@ -1,13 +1,11 @@
 'use client'
 import React from 'react'
-import Image from 'next/image'
 import type { Page } from '@/payload-types'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
 import { useHeroTextConverters } from '@/components/RichTextConverters/heroTextConverters'
 
 export const ImageHero: React.FC<Page['hero']> = ({ media, richText }) => {
-  const url = media && typeof media === 'object' && 'url' in media ? media.url : null
   const heroTextConverters = useHeroTextConverters()
 
   return (

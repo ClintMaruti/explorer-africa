@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react'
-
 import type { Page } from '@/payload-types'
 
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
@@ -10,6 +9,8 @@ import { MapBlock } from '@/blocks/Map/Component'
 import { GalleryBlock } from '@/blocks/Gallery/Component'
 import { ParallaxBlock } from '@/blocks/Parallax/Component'
 import { Footer } from './Footer/Component'
+import { RoomRatesBlock } from './RoomRates/Component'
+import { CollapsibleBlockComponent } from './Collapsible/Component'
 
 const blockComponents = {
   mediaBlock: MediaBlock,
@@ -20,6 +21,8 @@ const blockComponents = {
   galleryBlock: GalleryBlock,
   parallaxBlock: ParallaxBlock,
   footer: Footer,
+  'room-rates-block': RoomRatesBlock,
+  collapsibleBlock: CollapsibleBlockComponent,
 } as const
 
 type BlocksMap = typeof blockComponents
@@ -29,7 +32,6 @@ export const RenderBlocks: React.FC<{
   blocks: NonNullable<Page['layout']>
 }> = (props) => {
   const { blocks } = props
-
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 
   if (hasBlocks) {

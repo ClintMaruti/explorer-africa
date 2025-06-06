@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { ImageContentBlock as ImageContentBlockProps } from '@/payload-types'
 import RichText from '@/components/RichText'
 import { Media } from '@/components/Media'
@@ -23,6 +23,10 @@ export const ImageContentBlock: React.FC<ImageContentBlockProps> = (props) => {
     links,
     backgroundColor = 'auto',
     contentSections = [],
+    showSeparatorLines = false,
+    separatorStyle = 'solid',
+    separatorColor = 'auto',
+    separatorWidth = 'medium',
   } = props
 
   // Background color logic
@@ -35,8 +39,11 @@ export const ImageContentBlock: React.FC<ImageContentBlockProps> = (props) => {
       lightGold: 'bg-pale-mint-white',
       charcoal: 'bg-charcoal',
       white: 'bg-white',
+      'gold-dark': 'bg-gold-dark',
+      'gold-darker': 'bg-gold-darker',
+      'gold-darkest': 'bg-gold-darkest',
     }
-    return colorMap[backgroundColor as 'lightGold' | 'charcoal' | 'white'] || 'bg-pale-mint-white'
+    return colorMap[backgroundColor as keyof typeof colorMap] || 'bg-pale-mint-white'
   }
 
   // Get text color class for a section
@@ -49,19 +56,25 @@ export const ImageContentBlock: React.FC<ImageContentBlockProps> = (props) => {
       dark: 'text-charcoal',
       light: 'text-white/90',
       gold: 'text-gold-dark',
+      'gold-dark': 'text-gold-dark',
+      'gold-darker': 'text-gold-darker',
+      'gold-darkest': 'text-gold-darkest',
     }
-    return colorMap[textColor as 'dark' | 'light' | 'gold'] || 'text-charcoal'
+    return colorMap[textColor as keyof typeof colorMap] || 'text-charcoal'
   }
 
   // Get line color class
   const getLineColorClass = (lineColor: string) => {
     const colorMap = {
       gold: 'bg-gold',
+      'gold-dark': 'bg-gold-dark',
+      'gold-darker': 'bg-gold-darker',
+      'gold-darkest': 'bg-gold-darkest',
       charcoal: 'bg-charcoal',
       white: 'bg-white',
       lightGold: 'bg-gold/70',
     }
-    return colorMap[lineColor as 'gold' | 'charcoal' | 'white' | 'lightGold'] || 'bg-gold'
+    return colorMap[lineColor as keyof typeof colorMap] || 'bg-gold'
   }
 
   // Get line width class
@@ -84,6 +97,53 @@ export const ImageContentBlock: React.FC<ImageContentBlockProps> = (props) => {
     }
     return spacingMap[spacing as 'small' | 'medium' | 'large'] || 'my-4'
   }
+
+  // Get separator line styles
+  const getSeparatorLineStyles = () => {
+    const colorClass = (() => {
+      if (separatorColor === 'auto') {
+        return imagePosition === 'left' ? 'border-charcoal/20' : 'border-white/30'
+      }
+      const colorMap = {
+        gold: 'border-gold',
+        'gold-dark': 'border-gold-dark',
+        'gold-darker': 'border-gold-darker',
+        'gold-darkest': 'border-gold-darkest',
+        lightGray: 'border-gray-300',
+        darkGray: 'border-gray-600',
+        charcoal: 'border-charcoal',
+        white: 'border-white',
+      }
+      return colorMap[separatorColor as keyof typeof colorMap] || 'border-gray-300'
+    })()
+
+    const styleClass = (() => {
+      const styleMap = {
+        solid: 'border-solid',
+        dashed: 'border-dashed',
+        dotted: 'border-dotted',
+      }
+      return styleMap[separatorStyle as keyof typeof styleMap] || 'border-solid'
+    })()
+
+    const widthClass = (() => {
+      const widthMap = {
+        short: 'w-20',
+        medium: 'w-30',
+        long: 'w-40',
+        full: 'w-full',
+      }
+      return widthMap[separatorWidth as keyof typeof widthMap] || 'w-30'
+    })()
+
+    return { colorClass, styleClass, widthClass }
+  }
+
+  const {
+    colorClass: separatorColorClass,
+    styleClass: separatorStyleClass,
+    widthClass: separatorWidthClass,
+  } = getSeparatorLineStyles()
 
   const backgroundColorClass = getBackgroundColorClass()
 
@@ -127,62 +187,18 @@ export const ImageContentBlock: React.FC<ImageContentBlockProps> = (props) => {
   }, [])
 
   // Create custom converters for the content text
-  const createContentTextConverters = (
-    textColor: string = 'auto',
-  ): JSXConvertersFunction<DefaultNodeTypes> =>
-    useMemo(
-      () =>
-        ({ defaultConverters }) => ({
-          ...defaultConverters,
-          heading: (props) => {
-            const { node, nodesToJSX, parent, converters } = props
-            const textColorClass = getTextColorClass(textColor)
+  const createContentTextConverters =
+    (textColor: string = 'auto'): JSXConvertersFunction<DefaultNodeTypes> =>
+    ({ defaultConverters }) => ({
+      ...defaultConverters,
+      heading: (props) => {
+        const { node, nodesToJSX, converters } = props
+        const textColorClass = getTextColorClass(textColor)
 
-            // Only apply custom styling to h4
-            if (node.tag === 'h4') {
-              return (
-                <h4
-                  className={cn(
-                    'font-light text-lg leading-relaxed mb-4',
-                    {
-                      'text-center': node.format === 'center',
-                      'text-right': node.format === 'right',
-                      'text-justify': node.format === 'justify',
-                      'ml-4': node.indent === 1,
-                      'ml-8': node.indent === 2,
-                      'ml-12': node.indent === 3,
-                      'ml-16': node.indent === 4,
-                    },
-                    textColorClass,
-                  )}
-                >
-                  {nodesToJSX({ nodes: node.children, parent: node, converters })}
-                </h4>
-              )
-            }
-            // For all other heading tags, create the element directly
-            const tag = node.tag
-            return React.createElement(
-              tag,
-              {
-                className: cn(
-                  {
-                    'text-center': node.format === 'center',
-                    'text-right': node.format === 'right',
-                    'text-justify': node.format === 'justify',
-                    'ml-4': node.indent === 1,
-                    'ml-8': node.indent === 2,
-                    'ml-12': node.indent === 3,
-                    'ml-16': node.indent === 4,
-                  },
-                  textColorClass,
-                ),
-              },
-              nodesToJSX({ nodes: node.children, parent: node, converters }),
-            )
-          },
-          paragraph: ({ node, nodesToJSX, parent, converters }) => (
-            <p
+        // Only apply custom styling to h4
+        if (node.tag === 'h4') {
+          return (
+            <h4
               className={cn(
                 'font-light text-lg leading-relaxed mb-4',
                 {
@@ -194,15 +210,54 @@ export const ImageContentBlock: React.FC<ImageContentBlockProps> = (props) => {
                   'ml-12': node.indent === 3,
                   'ml-16': node.indent === 4,
                 },
-                getTextColorClass(textColor),
+                textColorClass,
               )}
             >
               {nodesToJSX({ nodes: node.children, parent: node, converters })}
-            </p>
-          ),
-        }),
-      [textColor],
-    )
+            </h4>
+          )
+        }
+        // For all other heading tags, create the element directly
+        const tag = node.tag
+        return React.createElement(
+          tag,
+          {
+            className: cn(
+              {
+                'text-center': node.format === 'center',
+                'text-right': node.format === 'right',
+                'text-justify': node.format === 'justify',
+                'ml-4': node.indent === 1,
+                'ml-8': node.indent === 2,
+                'ml-12': node.indent === 3,
+                'ml-16': node.indent === 4,
+              },
+              textColorClass,
+            ),
+          },
+          nodesToJSX({ nodes: node.children, parent: node, converters }),
+        )
+      },
+      paragraph: ({ node, nodesToJSX, converters }) => (
+        <p
+          className={cn(
+            'font-light text-lg leading-relaxed mb-4',
+            {
+              'text-center': node.format === 'center',
+              'text-right': node.format === 'right',
+              'text-justify': node.format === 'justify',
+              'ml-4': node.indent === 1,
+              'ml-8': node.indent === 2,
+              'ml-12': node.indent === 3,
+              'ml-16': node.indent === 4,
+            },
+            getTextColorClass(textColor),
+          )}
+        >
+          {nodesToJSX({ nodes: node.children, parent: node, converters })}
+        </p>
+      ),
+    })
 
   return (
     <motion.div
@@ -263,33 +318,45 @@ export const ImageContentBlock: React.FC<ImageContentBlockProps> = (props) => {
             {contentSections && contentSections.length > 0 ? (
               contentSections.map((section: any, index: number) => {
                 const spacingClass = getSpacingClass(section.spacing || 'medium')
+                const isLastSection = index === contentSections.length - 1
 
-                if (section.sectionType === 'horizontalLine') {
-                  const lineColorClass = getLineColorClass(section.lineColor || 'gold')
-                  const lineWidthClass = getLineWidthClass(section.lineWidth || 'short')
+                return (
+                  <React.Fragment key={index}>
+                    {section.sectionType === 'horizontalLine' ? (
+                      <div className={cn('flex', spacingClass)}>
+                        <div
+                          className={cn(
+                            'h-px',
+                            getLineColorClass(section.lineColor || 'gold'),
+                            getLineWidthClass(section.lineWidth || 'short'),
+                          )}
+                        />
+                      </div>
+                    ) : section.sectionType === 'richText' && section.richText ? (
+                      <div className={spacingClass}>
+                        <RichText
+                          data={section.richText}
+                          enableGutter={false}
+                          converters={createContentTextConverters(section.textColor || 'auto')}
+                        />
+                      </div>
+                    ) : null}
 
-                  return (
-                    <div key={index} className={cn('flex', spacingClass)}>
-                      <div className={cn('h-px', lineColorClass, lineWidthClass)} />
-                    </div>
-                  )
-                }
-
-                if (section.sectionType === 'richText' && section.richText) {
-                  const textColor = section.textColor || 'auto'
-
-                  return (
-                    <div key={index} className={spacingClass}>
-                      <RichText
-                        data={section.richText}
-                        enableGutter={false}
-                        converters={createContentTextConverters(textColor)}
-                      />
-                    </div>
-                  )
-                }
-
-                return null
+                    {/* Automatic Separator Line Between Sections */}
+                    {showSeparatorLines && !isLastSection && (
+                      <div className="flex justify-start my-6">
+                        <div
+                          className={cn(
+                            'border-t',
+                            separatorColorClass,
+                            separatorStyleClass,
+                            separatorWidthClass,
+                          )}
+                        />
+                      </div>
+                    )}
+                  </React.Fragment>
+                )
               })
             ) : (
               <div className="text-center text-gray-500">
@@ -310,7 +377,7 @@ export const ImageContentBlock: React.FC<ImageContentBlockProps> = (props) => {
                     key={linkItem.id}
                     {...linkItem.link}
                     className={cn(
-                      'inline-flex text-xs px-8 py-4 transition-all duration-300 hover:scale-105',
+                      'inline-flex text-xs px-8 py-4 transition-all duration-300 hover:scale-105  outline-1 outline-gold-darker',
                       getTextColorClass('auto'),
                     )}
                   />

@@ -6,6 +6,8 @@ import { ColumnsBlock } from '@/blocks/Columns/config'
 import { MapBlock } from '@/blocks/Map/config'
 import { GalleryBlock } from '@/blocks/Gallery/config'
 import { ParallaxBlock } from '@/blocks/Parallax/config'
+import { RoomRatesBlock } from '@/blocks/RoomRates/config'
+import { CollapsibleBlock } from '@/blocks/Collapsible/config'
 import { slugField } from '@/fields/slug'
 import { hero } from '@/heros/config'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
@@ -21,6 +23,9 @@ export const Pages: CollectionConfig<'pages'> = {
   },
   defaultPopulate: {
     title: true,
+    layout: {
+      'room-rates-block': true,
+    },
   },
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],
@@ -70,7 +75,9 @@ export const Pages: CollectionConfig<'pages'> = {
                 MapBlock,
                 GalleryBlock,
                 ParallaxBlock,
+                RoomRatesBlock,
                 Footer,
+                CollapsibleBlock,
               ],
               required: false,
               admin: {

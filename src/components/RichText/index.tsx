@@ -1,7 +1,5 @@
-import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import {
   DefaultNodeTypes,
-  SerializedBlockNode,
   SerializedLinkNode,
   type DefaultTypedEditorState,
 } from '@payloadcms/richtext-lexical'
@@ -11,11 +9,7 @@ import {
   RichText as ConvertRichText,
 } from '@payloadcms/richtext-lexical/react'
 
-import type { MediaBlock as MediaBlockProps } from '@/payload-types'
-
 import { cn } from '@/utilities/ui'
-
-type NodeTypes = DefaultNodeTypes | SerializedBlockNode<MediaBlockProps>
 
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
   const { value, relationTo } = linkNode.fields.doc!

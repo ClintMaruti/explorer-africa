@@ -14,15 +14,63 @@ export const MediaBlock: React.FC<MediaBlockProps> = (props) => {
   const backgroundColorClass =
     backgroundColor === 'charcoal' ? 'bg-charcoal/40' : 'bg-pale-mint-white/80'
 
+  // Get text color class for a section
+  const getTextColorClass = (backgroundColor: string) => {
+    if (backgroundColor === 'charcoal') {
+      return 'text-white/90'
+    }
+    return 'text-charcoal/90'
+  }
+
   // Smooth scroll handler for menu items
   const handleMenuItemClick = useCallback((anchorId: string) => {
-    const element = document.getElementById(anchorId)
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      })
-    }
+    // Small delay to ensure any animations have completed
+    setTimeout(() => {
+      const element = document.getElementById(anchorId)
+      if (element) {
+        // Get the current MediaBlock position
+        const currentScrollY = window.pageYOffset
+        const viewportHeight = window.innerHeight
+        const elementRect = element.getBoundingClientRect()
+        const elementTop = elementRect.top + currentScrollY
+
+        // Try to find the MediaBlock container to preserve its visibility
+        const mediaBlock =
+          document.querySelector('[data-block-type="mediaBlock"]') ||
+          document.querySelector('.media-block') ||
+          element.closest('.media-block')
+
+        let offset = Math.min(viewportHeight * 0.3, 200) // Default offset
+
+        // If we can find the MediaBlock, calculate a smarter offset
+        if (mediaBlock) {
+          const mediaBlockRect = mediaBlock.getBoundingClientRect()
+          const mediaBlockTop = mediaBlockRect.top + currentScrollY
+          const mediaBlockHeight = mediaBlockRect.height
+
+          // If scrolling would hide the entire MediaBlock, adjust the offset
+          if (elementTop - offset < mediaBlockTop + mediaBlockHeight) {
+            offset = Math.max(offset, mediaBlockHeight * 0.4) // Keep at least 40% of MediaBlock visible
+          }
+        }
+
+        const scrollToPosition = Math.max(0, elementTop - offset)
+
+        window.scrollTo({
+          top: scrollToPosition,
+          behavior: 'smooth',
+        })
+
+        /* Alternative simpler approach (replace the above code with this if needed):
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center' // This keeps the element in the center, preserving context
+        })
+        */
+      } else {
+        console.warn(`Element with anchor ID "${anchorId}" not found`)
+      }
+    }, 100)
   }, [])
 
   // Create custom converters for the content text
@@ -30,7 +78,7 @@ export const MediaBlock: React.FC<MediaBlockProps> = (props) => {
     () =>
       ({ defaultConverters }) => ({
         ...defaultConverters,
-        heading: ({ node, nodesToJSX, parent, converters }) => {
+        heading: ({ node, nodesToJSX, converters }) => {
           const tag = node.tag as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
           const classNames = {
             h1: `font-ogg ${backgroundColor === 'charcoal' ? 'text-gold' : 'text-gold-dark'} text-4xl md:text-5xl lg:text-6xl mb-6 md:mb-8`,
@@ -48,7 +96,7 @@ export const MediaBlock: React.FC<MediaBlockProps> = (props) => {
             </HeadingTag>
           )
         },
-        paragraph: ({ node, nodesToJSX, parent, converters }) => (
+        paragraph: ({ node, nodesToJSX, converters }) => (
           <p
             className={cn(
               `font-poppins text-base md:text-lg mb-4 md:mb-6`,
@@ -68,6 +116,7 @@ export const MediaBlock: React.FC<MediaBlockProps> = (props) => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
       className={'relative w-full overflow-hidden'}
+      data-block-type="mediaBlock"
     >
       {/* Background Media */}
       {media && (
@@ -154,7 +203,13 @@ export const MediaBlock: React.FC<MediaBlockProps> = (props) => {
         {links && links.length > 0 && (
           <div className="flex flex-wrap gap-4 justify-center mt-8">
             {links.map((link) => (
-              <CMSLink key={link.id} {...link.link} className="text-xs px-8 py-4 text-white" />
+              <CMSLink
+                key={link.id}
+                {...link.link}
+                className={cn(
+                  'text-white inline-flex text-xs px-8 py-4 transition-all duration-300 hover:scale-105  outline-1 outline-gold-darker',
+                )}
+              />
             ))}
           </div>
         )}

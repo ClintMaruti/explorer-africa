@@ -54,6 +54,7 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
     collection: 'pages',
     draft,
     limit: 1,
+    depth: 2,
     pagination: false,
     overrideAccess: draft,
     where: {
@@ -63,5 +64,22 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
     },
   })
 
-  return result.docs?.[0] || null
+  const page = result.docs?.[0] || null
+
+  if (page && page.layout) {
+    for (const block of page.layout) {
+      if (block.blockType === 'room-rates-block' && block.roomRates) {
+        if (typeof block.roomRates === 'number' || typeof block.roomRates === 'string') {
+          const roomRatesData = await payload.findByID({
+            collection: 'room-rates',
+            id: block.roomRates,
+            depth: 2,
+          })
+          block.roomRates = roomRatesData
+        }
+      }
+    }
+  }
+
+  return page
 })

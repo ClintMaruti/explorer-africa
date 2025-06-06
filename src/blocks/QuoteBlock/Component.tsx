@@ -14,7 +14,7 @@ export const QuoteBlock: React.FC<QuoteBlockProps> = (props) => {
     () =>
       ({ defaultConverters }) => ({
         ...defaultConverters,
-        paragraph: ({ node, nodesToJSX, parent, converters }) => (
+        paragraph: ({ node, nodesToJSX, converters }) => (
           <p className="font-light text-2xl leading-[1.6em] tracking-wide font-playfair">
             {nodesToJSX({ nodes: node.children, parent: node, converters })}
           </p>

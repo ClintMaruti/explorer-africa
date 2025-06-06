@@ -9,7 +9,6 @@ import React from 'react'
 import type { Props as MediaProps } from '../types'
 
 import { cssVariables } from '@/cssVariables'
-import { getMediaUrl } from '@/utilities/getMediaUrl'
 
 const { breakpoints } = cssVariables
 
@@ -42,7 +41,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     height = fullHeight!
     alt = altFromResource || ''
 
-    const cacheTag = resource.updatedAt
+    // const cacheTag = resource.updatedAt
 
     // src = getMediaUrl(url, cacheTag)
     src = url ?? ''

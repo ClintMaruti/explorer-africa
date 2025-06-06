@@ -17,7 +17,6 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ data, handleClose, isOpen }) => {
   const navGroups = data.navItems || []
   const pathname = usePathname()
-  // console.log('the data', data)
   const getItemUrl = (link: NonNullable<HeaderType['navItems']>[0]['link']) => {
     if (!link) return '#'
 

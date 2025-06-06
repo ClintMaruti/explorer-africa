@@ -15,7 +15,6 @@ export const MapBlock: React.FC<MapBlockProps> = (props) => {
     zoomLevel = 15,
     mapMode = 'roadmap',
     height = 'medium',
-    showControls = true,
     allowFullscreen = true,
     borderRadius = 'medium',
   } = props

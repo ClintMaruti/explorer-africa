@@ -1,6 +1,6 @@
 'use client'
 
-import { useLayoutEffect, useRef, useMemo } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import ScrollSmoother from 'gsap/ScrollSmoother'
@@ -8,15 +8,13 @@ import { Media } from '@/components/Media'
 import type { Page } from '@/payload-types'
 import RichText from '@/components/RichText'
 import { cn } from '@/utilities/ui'
-import { DefaultNodeTypes } from '@payloadcms/richtext-lexical'
-import { JSXConvertersFunction } from '@payloadcms/richtext-lexical/react'
 import { useHeroTextConverters } from '@/components/RichTextConverters/heroTextConverters'
 
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother)
 
 const VIDEO_STRIPS = 6
 
-export const VideoHero: React.FC<Page['hero']> = ({ type = 'videoHero', media, richText }) => {
+export const VideoHero: React.FC<Page['hero']> = ({ media, richText }) => {
   const videoRef = useRef<HTMLDivElement>(null)
   const scrollIndicatorRef = useRef<HTMLDivElement>(null)
   const heroTextConverters = useHeroTextConverters()

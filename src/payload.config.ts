@@ -7,11 +7,15 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { resendAdapter } from '@payloadcms/email-resend'
+import type { Plugin } from 'payload'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Header } from './globals/Header/config'
 import { Pages } from './collections/Pages'
+import { RoomRates } from './collections/RoomRates'
+import { Documents } from './collections/Documents'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -23,7 +27,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Pages],
+  collections: [Users, Media, Pages, RoomRates, Documents],
   globals: [Header],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
@@ -36,11 +40,17 @@ export default buildConfig({
     },
   }),
   sharp,
+  email: resendAdapter({
+    apiKey: process.env.RESEND_API_KEY || '',
+    defaultFromAddress: process.env.EMAIL_FROM || 'no-reply@explorer-africa.com',
+    defaultFromName: 'Explorer Africa',
+  }),
   plugins: [
-    payloadCloudPlugin(),
+    // Only use payloadCloudPlugin on the server side
+    ...(typeof window === 'undefined' ? [payloadCloudPlugin()] : []),
     redirectsPlugin({
       collections: ['pages'],
     }),
     // storage-adapter-placeholder
-  ],
+  ] as Plugin[],
 })

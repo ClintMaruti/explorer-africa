@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { cn } from '@/utilities/ui'
 import RichText from '@/components/RichText'
 import type { ParallaxBlock as ParallaxBlockProps } from '@/payload-types'
@@ -54,11 +54,11 @@ export const ParallaxBlock: React.FC<ParallaxBlockProps> = (props) => {
   }[overlay as 'none' | 'light' | 'medium' | 'dark']
 
   // Text alignment classes
-  const alignmentClass = {
-    left: 'text-left items-start',
-    center: 'text-center items-center',
-    right: 'text-right items-end',
-  }[textAlignment as 'left' | 'center' | 'right']
+  // const alignmentClass = {
+  //   left: 'text-left items-start',
+  //   center: 'text-center items-center',
+  //   right: 'text-right items-end',
+  // }[textAlignment as 'left' | 'center' | 'right']
 
   // Text color classes
   const textColorClass = {
@@ -71,34 +71,79 @@ export const ParallaxBlock: React.FC<ParallaxBlockProps> = (props) => {
   useGSAP(() => {
     if (!containerRef.current || !backgroundRef.current || speedValue === 0) return
 
+    // Clear any existing ScrollTriggers for this element first
+    ScrollTrigger.getAll().forEach((trigger) => {
+      if (trigger.trigger === containerRef.current) {
+        trigger.kill()
+      }
+    })
+
+    // Refresh ScrollTrigger to ensure proper calculation
+    ScrollTrigger.refresh()
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
         start: 'top bottom',
         end: 'bottom top',
-        scrub: true,
+        scrub: 1, // Add slight lag for smoother effect
         refreshPriority: -1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          // Optional: Add debugging
+          console.log('Parallax progress:', self.progress)
+        },
       },
     })
 
     // Move background slower than scroll to create parallax effect
-    // Reduced movement to prevent edge exposure
-    tl.to(backgroundRef.current, {
-      yPercent: -10 * speedValue,
-      ease: 'none',
-    })
+    // Increased movement range for more noticeable effect
+    tl.fromTo(
+      backgroundRef.current,
+      {
+        yPercent: 15 * speedValue,
+      },
+      {
+        yPercent: -15 * speedValue,
+        ease: 'none',
+      },
+    )
+
+    // Store the ScrollTrigger instance for proper cleanup
+    const scrollTriggerInstance = tl.scrollTrigger
 
     return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
+      if (scrollTriggerInstance) {
+        scrollTriggerInstance.kill()
+      }
+      tl.kill()
     }
   }, [speedValue])
+
+  // Handle ScrollTrigger refresh on mount and resize
+  useEffect(() => {
+    const handleResize = () => {
+      ScrollTrigger.refresh()
+    }
+
+    // Initial refresh
+    setTimeout(() => {
+      ScrollTrigger.refresh()
+    }, 100)
+
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   // Create custom converters for the parallax content
   const parallaxTextConverters: JSXConvertersFunction<DefaultNodeTypes> = useMemo(
     () =>
       ({ defaultConverters }) => ({
         ...defaultConverters,
-        heading: ({ node, nodesToJSX, parent, converters }) => {
+        heading: ({ node, nodesToJSX, converters }) => {
           const tag = node.tag as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
           const classNames = {
             h1: `font-ogg text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-6 md:mb-8 tracking-wide ${textColorClass}`,
@@ -116,7 +161,7 @@ export const ParallaxBlock: React.FC<ParallaxBlockProps> = (props) => {
             </HeadingTag>
           )
         },
-        paragraph: ({ node, nodesToJSX, parent, converters }) => (
+        paragraph: ({ node, nodesToJSX, converters }) => (
           <p
             className={cn(
               'font-poppins text-lg md:text-xl lg:text-2xl mb-4 md:mb-6 leading-relaxed font-light',
@@ -127,7 +172,7 @@ export const ParallaxBlock: React.FC<ParallaxBlockProps> = (props) => {
             {nodesToJSX({ nodes: node.children, parent: node, converters })}
           </p>
         ),
-        list: ({ node, nodesToJSX, parent, converters }) => {
+        list: ({ node, nodesToJSX, converters }) => {
           const ListTag = node.listType === 'number' ? 'ol' : 'ul'
           return (
             <ListTag
@@ -141,7 +186,7 @@ export const ParallaxBlock: React.FC<ParallaxBlockProps> = (props) => {
             </ListTag>
           )
         },
-        listitem: ({ node, nodesToJSX, parent, converters }) => (
+        listitem: ({ node, nodesToJSX, converters }) => (
           <li
             className={cn(
               'font-poppins text-lg md:text-xl leading-relaxed font-light relative',
@@ -154,7 +199,7 @@ export const ParallaxBlock: React.FC<ParallaxBlockProps> = (props) => {
             </span>
           </li>
         ),
-        quote: ({ node, nodesToJSX, parent, converters }) => (
+        quote: ({ node, nodesToJSX, converters }) => (
           <blockquote
             className={cn(
               'border-l-4 border-gold pl-6 italic font-light text-xl md:text-2xl mb-6 max-w-4xl',
@@ -173,13 +218,20 @@ export const ParallaxBlock: React.FC<ParallaxBlockProps> = (props) => {
       ref={containerRef}
       className={cn('relative w-full overflow-hidden', heightClass)}
       id={anchorId || undefined}
-      style={{ isolation: 'isolate' }}
+      style={{
+        isolation: 'isolate',
+        transform: 'translate3d(0, 0, 0)', // Force hardware acceleration
+      }}
     >
       {/* Parallax Background */}
       <div
         ref={backgroundRef}
-        className="absolute inset-0 w-full h-[140%] -top-[10%] z-0"
-        style={{ willChange: 'transform' }}
+        className="absolute inset-0 w-full h-[120%] -top-[10%] z-0"
+        style={{
+          willChange: 'transform',
+          transform: 'translate3d(0, 0, 0)', // Force hardware acceleration
+          backfaceVisibility: 'hidden',
+        }}
       >
         {backgroundImage && (
           <Media
