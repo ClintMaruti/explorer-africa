@@ -11,6 +11,7 @@ import { ParallaxBlock } from '@/blocks/Parallax/Component'
 import { Footer } from './Footer/Component'
 import { RoomRatesBlock } from './RoomRates/Component'
 import { CollapsibleBlockComponent } from './Collapsible/Component'
+import { StoriesBlock } from './Stories/Component'
 
 const blockComponents = {
   mediaBlock: MediaBlock,
@@ -23,6 +24,7 @@ const blockComponents = {
   footer: Footer,
   'room-rates-block': RoomRatesBlock,
   collapsibleBlock: CollapsibleBlockComponent,
+  storiesBlock: StoriesBlock,
 } as const
 
 type BlocksMap = typeof blockComponents

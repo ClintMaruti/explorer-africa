@@ -91,7 +91,6 @@ export const ParallaxBlock: React.FC<ParallaxBlockProps> = (props) => {
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           // Optional: Add debugging
-          console.log('Parallax progress:', self.progress)
         },
       },
     })

@@ -78,6 +78,10 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
           block.roomRates = roomRatesData
         }
       }
+      if (block.blockType === 'storiesBlock' && block.stories) {
+        // We are now fetching stories in the component itself, so we don't need to populate them here.
+        // If you need to pass initial stories, you could limit the initial fetch here and pass them as props.
+      }
     }
   }
 

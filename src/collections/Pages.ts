@@ -15,6 +15,8 @@ import { revalidatePage } from '@/hooks/revalidatePage'
 import { revalidateDelete } from '@/hooks/revalidatePage'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import { CollectionConfig } from 'payload'
+import { StoriesBlock } from '@/blocks/Stories/config'
+import { populateStories } from '@/hooks/populateStories'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -25,6 +27,7 @@ export const Pages: CollectionConfig<'pages'> = {
     title: true,
     layout: {
       'room-rates-block': true,
+      storiesBlock: true,
     },
   },
   admin: {
@@ -78,6 +81,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 RoomRatesBlock,
                 Footer,
                 CollapsibleBlock,
+                StoriesBlock,
               ],
               required: false,
               admin: {
@@ -102,6 +106,7 @@ export const Pages: CollectionConfig<'pages'> = {
     afterChange: [revalidatePage],
     beforeChange: [populatePublishedAt],
     afterDelete: [revalidateDelete],
+    beforeRead: [populateStories],
   },
   versions: {
     drafts: {
