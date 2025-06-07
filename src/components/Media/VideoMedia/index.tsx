@@ -4,6 +4,7 @@ import { cn } from '@/utilities/ui'
 import React, { useEffect, useRef } from 'react'
 
 import type { Props as MediaProps } from '../types'
+import { getMediaUrl } from '@/utilities/getMediaUrl'
 
 export const VideoMedia: React.FC<MediaProps> = (props) => {
   const { onClick, resource, videoClassName } = props
@@ -22,7 +23,7 @@ export const VideoMedia: React.FC<MediaProps> = (props) => {
   }, [])
 
   if (resource && typeof resource === 'object') {
-    const { url } = resource
+    const { filename } = resource
 
     return (
       <video
@@ -35,7 +36,7 @@ export const VideoMedia: React.FC<MediaProps> = (props) => {
         playsInline
         ref={videoRef}
       >
-        <source src={url ?? ''} />
+        <source src={getMediaUrl(`/media/${filename}`)} />
       </video>
     )
   }
