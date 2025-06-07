@@ -8,7 +8,7 @@ import {
   UnderlineFeature,
   type LinkFields,
 } from '@payloadcms/richtext-lexical'
-import { ColumnsFeature } from '@/lexical/ColumnsFeature'
+// import { ColumnsFeature } from '@/lexical/ColumnsFeature'
 
 export const defaultLexical = lexicalEditor({
   features: [
@@ -16,7 +16,7 @@ export const defaultLexical = lexicalEditor({
     UnderlineFeature(),
     BoldFeature(),
     ItalicFeature(),
-    ColumnsFeature(),
+    // ColumnsFeature(),
     LinkFeature({
       enabledCollections: ['pages'],
       fields: ({ defaultFields }) => {
