@@ -44,7 +44,7 @@ export const StoriesBlock: React.FC<StoriesBlockProps> = (props) => {
 
   return (
     <div className="w-full bg-white py-12">
-      <div className="container mx-auto">
+      <div className="container mx-auto p-6">
         {stories && stories.map((story) => story && <StoryComponent key={story.id} {...story} />)}
         {hasNextPage && (
           <div className="text-center mt-8">
