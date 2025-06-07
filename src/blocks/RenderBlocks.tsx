@@ -12,6 +12,8 @@ import { Footer } from './Footer/Component'
 import { RoomRatesBlock } from './RoomRates/Component'
 import { CollapsibleBlockComponent } from './Collapsible/Component'
 import { StoriesBlock } from './Stories/Component'
+import { LiveCamBlockComponent } from '@/blocks/LiveCam'
+import { FormBlock } from '@/blocks/Form/Component'
 
 const blockComponents = {
   mediaBlock: MediaBlock,
@@ -25,6 +27,8 @@ const blockComponents = {
   'room-rates-block': RoomRatesBlock,
   collapsibleBlock: CollapsibleBlockComponent,
   storiesBlock: StoriesBlock,
+  liveCamBlock: LiveCamBlockComponent,
+  formBlock: FormBlock,
 } as const
 
 type BlocksMap = typeof blockComponents

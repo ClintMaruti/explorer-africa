@@ -8,6 +8,7 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { resendAdapter } from '@payloadcms/email-resend'
 import type { Plugin } from 'payload'
 import { seoPlugin } from '@payloadcms/plugin-seo'
@@ -22,6 +23,7 @@ import { Page } from './payload-types'
 import { getServerSideURL } from './utilities/getURL'
 import { Stories } from './collections/Stories'
 import { Categories } from './collections/Categories'
+import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -56,10 +58,9 @@ export default buildConfig({
     },
   }),
   sharp,
-  email: resendAdapter({
-    apiKey: process.env.RESEND_API_KEY || '',
-    defaultFromAddress: process.env.EMAIL_FROM || 'no-reply@explorer-africa.com',
-    defaultFromName: 'Explorer Africa',
+  email: nodemailerAdapter({
+    defaultFromAddress: process.env.EMAIL_FROM || 'clintmaruti@gmail.com',
+    defaultFromName: 'Explorer Africa - Inquiry',
   }),
   plugins: [
     // Only use payloadCloudPlugin on the server side
@@ -77,5 +78,25 @@ export default buildConfig({
       generateURL,
       generateDescription: ({ doc }) => doc.excerpt,
     }),
+    formBuilderPlugin({
+      fields: {
+        text: true,
+        textarea: true,
+        email: true,
+        message: true,
+      },
+      beforeEmail: (emailsToSend, beforeChangeParams) => {
+        console.log('emailsToSend', emailsToSend)
+        console.log('beforeChangeParams', beforeChangeParams)
+        return emailsToSend
+      },
+      defaultToEmail: 'clintmaruti@gmail.com',
+    }),
   ] as Plugin[],
 })
+
+// resendAdapter({
+//   apiKey: process.env.RESEND_API_KEY || '',
+//   defaultFromAddress: process.env.EMAIL_FROM || 'clintmaruti@gmail.com',
+//   defaultFromName: 'Explorer Africa - Inquiry',
+// })

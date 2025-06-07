@@ -17,6 +17,8 @@ import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import { CollectionConfig } from 'payload'
 import { StoriesBlock } from '@/blocks/Stories/config'
 import { populateStories } from '@/hooks/populateStories'
+import { LiveCamBlock } from '@/blocks/LiveCam/config'
+import { FormBlock } from '@/blocks/Form/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -82,6 +84,8 @@ export const Pages: CollectionConfig<'pages'> = {
                 Footer,
                 CollapsibleBlock,
                 StoriesBlock,
+                LiveCamBlock,
+                FormBlock,
               ],
               required: false,
               admin: {

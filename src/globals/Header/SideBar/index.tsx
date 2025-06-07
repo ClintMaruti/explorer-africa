@@ -51,7 +51,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ data, handleClose, isOpen }) =
       )}
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 w-64 h-screen bg-black/50 backdrop-blur-sm text-gold transform transition-transform duration-300 ease-in-out z-50 ${
+        className={`fixed top-0 left-0 w-60 h-screen bg-black/50 backdrop-blur-sm text-gold transform transition-transform duration-300 ease-in-out z-50 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -66,12 +66,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ data, handleClose, isOpen }) =
         <div className="flex flex-col h-full">
           {/* Navigation Items */}
           <nav className="flex-1 px-4 py-6 overflow-y-auto">
-            <ul className="space-y-6">
+            <ul className="space-y-2">
               {navGroups.map((group) => (
-                <li key={group.id} className="space-y-2">
+                <li key={group.id}>
                   {group.link && (
                     <Link
                       href={getItemUrl(group.link)}
+                      onClick={() => handleClose(false)}
                       className={cn(
                         'flex items-center px-4 py-3 text-white transition-all duration-200',
                         isActive(group.link)
