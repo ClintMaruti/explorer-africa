@@ -23,8 +23,8 @@ export const VideoMedia: React.FC<MediaProps> = (props) => {
   }, [])
 
   if (resource && typeof resource === 'object') {
-    const { filename } = resource
-
+    const { url } = resource
+    const cacheTag = resource.updatedAt
     return (
       <video
         autoPlay
@@ -36,7 +36,8 @@ export const VideoMedia: React.FC<MediaProps> = (props) => {
         playsInline
         ref={videoRef}
       >
-        <source src={getMediaUrl(`/media/${filename}`)} />
+        {/* <source src={getMediaUrl(`/media/${filename}`)} /> */}
+        <source src={getMediaUrl(url, cacheTag)} />
       </video>
     )
   }
