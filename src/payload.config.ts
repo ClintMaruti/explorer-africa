@@ -24,6 +24,7 @@ import { getServerSideURL } from './utilities/getURL'
 import { Stories } from './collections/Stories'
 import { Categories } from './collections/Categories'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
+import { s3Storage } from '@payloadcms/storage-s3'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -94,6 +95,22 @@ export default buildConfig({
         return emailsToSend
       },
       defaultToEmail: 'clintmaruti@gmail.com',
+    }),
+    s3Storage({
+      collections: {
+        media: {
+          prefix: 'media',
+        },
+      },
+      bucket: process.env.S3_BUCKET || '',
+      config: {
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+        },
+        region: process.env.S3_REGION || '',
+        // ... Other S3 configuration
+      },
     }),
   ] as Plugin[],
 })

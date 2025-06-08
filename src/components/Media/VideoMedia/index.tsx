@@ -2,7 +2,6 @@
 
 import { cn } from '@/utilities/ui'
 import React, { useEffect, useRef } from 'react'
-
 import type { Props as MediaProps } from '../types'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 
@@ -23,7 +22,8 @@ export const VideoMedia: React.FC<MediaProps> = (props) => {
   }, [])
 
   if (resource && typeof resource === 'object') {
-    const { url } = resource
+    const { filename, url } = resource
+    console.log('url', url)
     const cacheTag = resource.updatedAt
     return (
       <video
