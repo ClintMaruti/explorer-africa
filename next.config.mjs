@@ -12,6 +12,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'main.d37lc881f5q9hk.amplifyapp.com',
       },
+      {
+        protocol: 'https',
+        hostname: '*.amplifyapp.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.netlify.app',
+      },
     ],
   },
   // Your Next.js config here
